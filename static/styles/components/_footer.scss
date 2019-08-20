@@ -1,0 +1,23 @@
+footer {
+  background: #151620;
+  padding: 16px 0;
+  ul {
+    display: flex;
+    flex-wrap: wrap;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    li {
+      padding-right: 24px;
+    }
+    a {
+      color: white;
+      opacity: 0.25;
+      font-size: 0.8em;
+      &:hover {
+        opacity: 0.5;
+        text-decoration: underline;
+      }
+    }
+  }
+}

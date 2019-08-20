@@ -1,0 +1,32 @@
+.origin-page {
+  color: white;
+  background: $fn-red;
+  padding-bottom: 128px;
+  .fracking-image {
+    border-radius: $global-radius;
+  }
+
+  .event-details--container {
+    background: $fn-blue;
+    padding: 24px;
+    border-radius: $global-radius;
+  }
+
+  iframe {
+    border: none;
+  }
+
+  .not-in-sydney {
+    p {
+      color: rgba(white, 0.7);
+      font-size: 0.9em;
+      padding: 0 16px;
+    }
+    &:hover {
+      p {
+        color: white;
+        text-decoration: underline;
+      }
+    }
+  }
+}
