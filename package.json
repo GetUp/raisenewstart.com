@@ -1,5 +1,6 @@
 {
   "name": "fraudstop",
+  "license": "ISC",
   "scripts": {
     "dev": "next",
     "build": "next build",
