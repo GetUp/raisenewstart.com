@@ -1,0 +1,25 @@
+nav {
+  position: absolute;
+  top: 0;
+  width: 100%;
+  font-size: 0.85em;
+  z-index: 150;
+  ul {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    display: flex;
+    justify-content: flex-end;
+    padding: 12px 0;
+  }
+  .nav-item a {
+    color: white;
+    font-weight: 700;
+    padding-left: 32px;
+  }
+  .nav-item:hover {
+    a {
+      text-decoration: underline;
+    }
+  }
+}
