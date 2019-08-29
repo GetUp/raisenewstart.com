@@ -1,6 +1,6 @@
 module FraudStop exposing (main)
 
-import Browser exposing (element)
+import Browser
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events exposing (..)
@@ -48,14 +48,27 @@ main =
 
 
 type Msg
-    = ClickedAccordion Accordion
+    = ClickedAccordion String
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
-        ClickedAccordion accordion ->
-            ( { model | accordions = { accordion | open = not accordion.open } :: model.accordions }, Cmd.none )
+        ClickedAccordion accordionHeader ->
+            let
+                newAccordions =
+                    List.map (toggleAccordion accordionHeader) model.accordions
+            in
+            ( { model | accordions = newAccordions }, Cmd.none )
+
+
+toggleAccordion : String -> Accordion -> Accordion
+toggleAccordion header accordion =
+    if accordion.header == header then
+        { accordion | open = not accordion.open }
+
+    else
+        accordion
 
 
 
@@ -73,7 +86,7 @@ accordionView accordion =
                 " accordion--closed"
     in
     section [ class "accordion header-accordion" ]
-        [ button [ onClick <| ClickedAccordion accordion, class ("accordion-title" ++ closedClass) ]
+        [ button [ onClick <| ClickedAccordion accordion.header, class ("accordion-title" ++ closedClass) ]
             [ img [ src "/static/images/orangeArrow.svg", class "accordion-arrow" ] []
             , text accordion.header
             ]
