@@ -12,9 +12,7 @@ module.exports = withCSS(
       config.module.rules.push({
         test: /\.elm$/,
         exclude: [/elm-stuff/, /node_modules/],
-        use: [
-          { loader: 'elm-webpack-loader', options: { optimize: true } }
-        ]
+        use: [{ loader: 'elm-webpack-loader', options: { optimize: false } }]
       })
 
       config.module.rules.push({

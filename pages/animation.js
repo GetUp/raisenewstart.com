@@ -3,7 +3,7 @@ import ReactMarkdown from 'react-markdown'
 import Layout from '../components/Layout'
 import content from '../content/about.md'
 import AutoSizingIframe from '../components/AutoSizingIframe'
-import { TweenLite, Elastic, TimelineLite, Circ, TweenMax, TimelineMax } from 'gsap'
+import { TweenMax, TimelineMax } from 'gsap'
 import { SSL_OP_NO_TLSv1_1 } from 'constants'
 
 const Animation = () => {
@@ -19,7 +19,6 @@ const Animation = () => {
       scale: 0.8,
       transformOrigin: '50% 50%'
     })
-    const tl = new TimelineMax()
 
     const animateCentrelink = () => {
       const tl = new TimelineMax()
@@ -68,11 +67,10 @@ const Animation = () => {
       return tl
     }
 
-    const master = new TimelineMax({ repeat: -1, repeatDelay: 0 })
+    const master = new TimelineMax({ repeat: -1 })
     master.timeScale(1.3)
     master.add(animateCentrelink())
     master.add(animateHeart(), '-=3')
-    // master.seek(animateHeart())
   }, [])
   return (
     <Layout>

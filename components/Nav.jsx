@@ -14,8 +14,6 @@ const links = [
 const Nav = () => {
   const router = useRouter()
   const query = router.query
-  console.log(router)
-  console.log(router.query)
 
   return (
     <nav>

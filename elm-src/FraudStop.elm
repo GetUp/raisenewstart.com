@@ -4,6 +4,8 @@ import Browser
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events exposing (..)
+import Http exposing (..)
+import Json.Encode as Encode
 
 
 type alias Accordion =
@@ -15,7 +17,21 @@ type alias Accordion =
 
 type alias Model =
     { accordions : List Accordion
+    , firstName : String
+    , debtReason : String
+    , currentPane : Pane
+    , response : SubmitResponse
     }
+
+
+type Pane
+    = PersonalDetails
+    | Letter
+
+
+type SubmitResponse
+    = Res (Result Http.Error String)
+    | Nothing
 
 
 initialAccordions : List Accordion
@@ -29,7 +45,19 @@ initialAccordions =
 initialModel : Model
 initialModel =
     { accordions = initialAccordions
+    , firstName = ""
+    , debtReason = ""
+    , currentPane = PersonalDetails
+    , response = Nothing
     }
+
+
+encode : Model -> Encode.Value
+encode model =
+    Encode.object
+        [ ( "firstName", Encode.string model.firstName )
+        , ( "debtReason", Encode.string model.debtReason )
+        ]
 
 
 init : () -> ( Model, Cmd Msg )
@@ -49,10 +77,19 @@ main =
 
 type Msg
     = ClickedAccordion String
+    | SetName String
+    | SetdebtReason String
+    | GoToLetter
+    | SubmitForm
+    | GotResponse (Result Http.Error String)
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
+    let
+        _ =
+            Debug.log "Message " msg
+    in
     case msg of
         ClickedAccordion accordionHeader ->
             let
@@ -60,6 +97,34 @@ update msg model =
                     List.map (toggleAccordion accordionHeader) model.accordions
             in
             ( { model | accordions = newAccordions }, Cmd.none )
+
+        SetName firstName ->
+            ( { model | firstName = firstName }, Cmd.none )
+
+        SetdebtReason debtReason ->
+            ( { model | debtReason = debtReason }, Cmd.none )
+
+        GoToLetter ->
+            ( { model | currentPane = Letter }, Cmd.none )
+
+        SubmitForm ->
+            ( model, submitForm model )
+
+        GotResponse response ->
+            ( { model | response = Res response }, Cmd.none )
+
+
+submitForm : Model -> Cmd Msg
+submitForm model =
+    let
+        _ =
+            Debug.log "Submit " model
+    in
+    Http.post
+        { url = "http://debt-star-staging.herokuapp.com/dothething"
+        , body = Http.jsonBody (encode model)
+        , expect = Http.expectString GotResponse
+        }
 
 
 toggleAccordion : String -> Accordion -> Accordion
@@ -69,6 +134,28 @@ toggleAccordion header accordion =
 
     else
         accordion
+
+
+togglePane : Pane -> Pane -> String
+togglePane pane currentPane =
+    if pane == currentPane then
+        ""
+
+    else
+        " hide"
+
+
+showAlert : SubmitResponse -> String
+showAlert res =
+    case res of
+        Nothing ->
+            ""
+
+        Res (Ok _) ->
+            "Success"
+
+        Res (Err _) ->
+            "Error"
 
 
 
@@ -113,10 +200,24 @@ view model =
                     ]
                 ]
             ]
+        , h3 [] [ text (showAlert model.response) ]
         , div [ class "grid-container" ]
             [ div [ class "grid-x grid-padding-x" ]
                 [ div [ class "cell small-12 medium-offset-1 medium-7 large-offset-2 large-6 pad-x mt-5 mb-5" ]
-                    [--   <Form />
+                    [ div [ class ("form-container" ++ togglePane PersonalDetails model.currentPane) ]
+                        [ div [ class "form-item" ]
+                            [ label [ class "mb-1", for "firstName" ] [ text "First Name" ]
+                            , input [ type_ "text", id "firstName", name "firstName", placeholder "First Name", value model.firstName, onInput SetName ] []
+                            ]
+                        , button [ class "btn btn-primary btn-large mt-4", onClick GoToLetter ] [ text "Next" ]
+                        ]
+                    , div [ class ("form-container" ++ togglePane Letter model.currentPane) ]
+                        [ div [ class "form-item" ]
+                            [ label [ class "mb-1", for "debtReason" ] [ text "debtReason" ]
+                            , input [ type_ "text", id "debtReason", name "debtReason", placeholder "debtReason", value model.debtReason, onInput SetdebtReason ] []
+                            ]
+                        , button [ class "btn btn-primary btn-large mt-4", onClick SubmitForm ] [ text "Submit" ]
+                        ]
                     ]
                 ]
             ]

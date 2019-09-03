@@ -2,6 +2,9 @@
   border-radius: $global-radius;
 }
 .form-container {
+  &.hide {
+    display: none;
+  }
   .two-column {
     display: flex;
     .form-item {
