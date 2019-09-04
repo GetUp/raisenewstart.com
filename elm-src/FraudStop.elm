@@ -8,19 +8,36 @@ import Http exposing (..)
 import Json.Encode as Encode
 
 
-type alias Accordion =
-    { open : Bool
-    , header : String
-    , content : String
-    }
-
-
 type alias Model =
     { accordions : List Accordion
     , firstName : String
     , debtReason : String
     , currentPane : Pane
     , response : SubmitResponse
+    , details : Details
+    }
+
+
+type alias Details =
+    { firstName : String
+    , lastName : String
+    , email : String
+    , address : String
+    , suburb : String
+    , postcode : String
+    , dob : String
+    , phone : String
+    , crn : String
+    , debtReason : String
+
+    -- , personalCircumstances : List String
+    }
+
+
+type alias Accordion =
+    { open : Bool
+    , header : String
+    , content : String
     }
 
 
@@ -42,6 +59,21 @@ initialAccordions =
     ]
 
 
+initialDetails : Details
+initialDetails =
+    { firstName = ""
+    , lastName = ""
+    , email = ""
+    , address = ""
+    , suburb = ""
+    , postcode = ""
+    , dob = ""
+    , phone = ""
+    , crn = ""
+    , debtReason = ""
+    }
+
+
 initialModel : Model
 initialModel =
     { accordions = initialAccordions
@@ -49,6 +81,7 @@ initialModel =
     , debtReason = ""
     , currentPane = PersonalDetails
     , response = Nothing
+    , details = initialDetails
     }
 
 
@@ -77,7 +110,7 @@ main =
 
 type Msg
     = ClickedAccordion String
-    | SetName String
+    | SetName String String
     | SetdebtReason String
     | GoToLetter
     | SubmitForm
@@ -98,8 +131,18 @@ update msg model =
             in
             ( { model | accordions = newAccordions }, Cmd.none )
 
-        SetName firstName ->
-            ( { model | firstName = firstName }, Cmd.none )
+        SetName field value ->
+            let
+                details =
+                    model.details
+
+                newDetails =
+                    { model | details = { details | firstName = value } }
+
+                _ =
+                    Debug.log "Details " newDetails
+            in
+            ( newDetails, Cmd.none )
 
         SetdebtReason debtReason ->
             ( { model | debtReason = debtReason }, Cmd.none )
@@ -183,6 +226,60 @@ accordionView accordion =
         ]
 
 
+personalDetailsView : Details -> Pane -> Html Msg
+personalDetailsView details currentPane =
+    Html.form [ class ("form-container" ++ togglePane PersonalDetails currentPane), onSubmit GoToLetter ]
+        [ div [ class "form-item" ]
+            [ label [ class "mb-1", for "firstName" ] [ text "First Name" ]
+            , input [ type_ "text", id "firstName", name "firstName", placeholder "First Name", value details.firstName, onInput (SetName details.firstName) ] []
+            ]
+        , div [ class "form-item" ]
+            [ label [ class "mb-1", for "lastName" ] [ text "Last Name" ]
+            , input [ type_ "text", id "lastName", name "lastName", placeholder "Last Name", value details.lastName ] []
+            ]
+        , div [ class "form-item" ]
+            [ label [ class "mb-1", for "email" ] [ text "Email" ]
+            , input [ type_ "email", id "email", name "email", placeholder "Email", value details.email ] []
+            ]
+        , div [ class "form-item" ]
+            [ label [ class "mb-1", for "address" ] [ text "Address" ]
+            , input [ type_ "text", id "address", name "address", placeholder "Address", value details.address ] []
+            ]
+        , div [ class "form-item" ]
+            [ label [ class "mb-1", for "suburb" ] [ text "Suburb" ]
+            , input [ type_ "text", id "suburb", name "suburb", placeholder "Suburb", value details.suburb ] []
+            ]
+        , div [ class "form-item" ]
+            [ label [ class "mb-1", for "postcode" ] [ text "Post Code" ]
+            , input [ type_ "text", id "postcode", name "postcode", placeholder "Post Code", value details.postcode, pattern "^[0-9]{4}$", title "Your postcode should be 4 digits" ] []
+            ]
+        , div [ class "form-item" ]
+            [ label [ class "mb-1", for "dob" ] [ text "Date of Birth" ]
+            , input [ type_ "date", id "dob", name "dob", placeholder "dd/mm/yyyy", value details.dob ] []
+            ]
+        , div [ class "form-item" ]
+            [ label [ class "mb-1", for "Phone" ] [ text "Phone" ]
+            , input [ type_ "text", id "Phone", name "Phone", placeholder "Phone", value details.phone, pattern "^[0-9]{10,16}$" ] []
+            ]
+        , div [ class "form-item" ]
+            [ label [ class "mb-1", for "crn" ] [ text "Centrelink Reference Number (CRN)" ]
+            , input [ type_ "text", id "crn", name "crn", placeholder "123456789A", value details.crn, pattern "^[0-9]{9}[a-zA-Z]{1}$", title "Your Centrelink CRN should be 9 digits followed by 1 letter" ] []
+            ]
+        , button [ type_ "submit", class "btn btn-primary btn-large mt-4" ] [ text "Next" ]
+        ]
+
+
+letterView : Details -> Pane -> Html Msg
+letterView details currentPane =
+    div [ class ("form-container" ++ togglePane Letter currentPane) ]
+        [ div [ class "form-item" ]
+            [ label [ class "mb-1", for "debtReason" ] [ text "debtReason" ]
+            , textarea [ id "debtReason", name "debtReason", placeholder "debtReason", value details.debtReason, onInput SetdebtReason ] []
+            ]
+        , button [ class "btn btn-primary btn-large mt-4", onClick SubmitForm ] [ text "Submit" ]
+        ]
+
+
 view : Model -> Html Msg
 view model =
     div []
@@ -204,20 +301,8 @@ view model =
         , div [ class "grid-container" ]
             [ div [ class "grid-x grid-padding-x" ]
                 [ div [ class "cell small-12 medium-offset-1 medium-7 large-offset-2 large-6 pad-x mt-5 mb-5" ]
-                    [ div [ class ("form-container" ++ togglePane PersonalDetails model.currentPane) ]
-                        [ div [ class "form-item" ]
-                            [ label [ class "mb-1", for "firstName" ] [ text "First Name" ]
-                            , input [ type_ "text", id "firstName", name "firstName", placeholder "First Name", value model.firstName, onInput SetName ] []
-                            ]
-                        , button [ class "btn btn-primary btn-large mt-4", onClick GoToLetter ] [ text "Next" ]
-                        ]
-                    , div [ class ("form-container" ++ togglePane Letter model.currentPane) ]
-                        [ div [ class "form-item" ]
-                            [ label [ class "mb-1", for "debtReason" ] [ text "debtReason" ]
-                            , input [ type_ "text", id "debtReason", name "debtReason", placeholder "debtReason", value model.debtReason, onInput SetdebtReason ] []
-                            ]
-                        , button [ class "btn btn-primary btn-large mt-4", onClick SubmitForm ] [ text "Submit" ]
-                        ]
+                    [ personalDetailsView model.details model.currentPane
+                    , letterView model.details model.currentPane
                     ]
                 ]
             ]
