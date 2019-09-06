@@ -1,6 +1,7 @@
 module FraudStop exposing (main)
 
 import Browser
+import Dict exposing (..)
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events exposing (..)
@@ -15,6 +16,7 @@ type alias Model =
     , currentPane : Pane
     , response : SubmitResponse
     , details : Details
+    , formFields : Dict String String
     }
 
 
@@ -82,6 +84,7 @@ initialModel =
     , currentPane = PersonalDetails
     , response = Nothing
     , details = initialDetails
+    , formFields = Dict.fromList [ ( "firstName", "" ) ]
     }
 
 
@@ -115,6 +118,7 @@ type Msg
     | GoToLetter
     | SubmitForm
     | GotResponse (Result Http.Error String)
+    | UpdateForm String String
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -155,6 +159,16 @@ update msg model =
 
         GotResponse response ->
             ( { model | response = Res response }, Cmd.none )
+
+        UpdateForm key value ->
+            let
+                updatedFields =
+                    Dict.insert key value model.formFields
+
+                _ =
+                    Debug.log "Updated Fields " updatedFields
+            in
+            ( { model | formFields = updatedFields }, Cmd.none )
 
 
 submitForm : Model -> Cmd Msg
@@ -226,12 +240,13 @@ accordionView accordion =
         ]
 
 
-personalDetailsView : Details -> Pane -> Html Msg
-personalDetailsView details currentPane =
-    Html.form [ class ("form-container" ++ togglePane PersonalDetails currentPane), onSubmit GoToLetter ]
+personalDetailsView : Details -> Model -> Pane -> Html Msg
+personalDetailsView details model currentPane =
+    Html.form
+        [ class ("form-container" ++ togglePane PersonalDetails currentPane), onSubmit GoToLetter ]
         [ div [ class "form-item" ]
             [ label [ class "mb-1", for "firstName" ] [ text "First Name" ]
-            , input [ type_ "text", id "firstName", name "firstName", placeholder "First Name", value details.firstName, onInput (SetName details.firstName) ] []
+            , input [ type_ "text", id "firstName", name "firstName", placeholder "First Name", onInput (UpdateForm "firstName") ] []
             ]
         , div [ class "form-item" ]
             [ label [ class "mb-1", for "lastName" ] [ text "Last Name" ]
@@ -301,7 +316,7 @@ view model =
         , div [ class "grid-container" ]
             [ div [ class "grid-x grid-padding-x" ]
                 [ div [ class "cell small-12 medium-offset-1 medium-7 large-offset-2 large-6 pad-x mt-5 mb-5" ]
-                    [ personalDetailsView model.details model.currentPane
+                    [ personalDetailsView model.details model model.currentPane
                     , letterView model.details model.currentPane
                     ]
                 ]
