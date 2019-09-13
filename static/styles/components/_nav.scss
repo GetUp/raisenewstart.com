@@ -1,5 +1,5 @@
 nav {
-  position: absolute;
+  position: relative;
   top: 0;
   width: 100%;
   font-size: 0.85em;
@@ -13,7 +13,7 @@ nav {
     padding: 12px 0;
   }
   .nav-item a {
-    color: white;
+    color: $ns-orange-500;
     font-weight: 700;
     padding-left: 32px;
   }

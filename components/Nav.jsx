@@ -3,9 +3,9 @@ import Link from 'next/link'
 import { useRouter } from 'next/router'
 
 const links = [
-  { href: '/tour', label: 'Home' },
-  { href: '/about', label: 'About' },
-  { href: '/origin', label: 'Origin AGM' }
+  { href: '/', label: 'Home' },
+  { href: '/mptracker', label: 'MP Tracker' },
+  { href: '/fraudstop', label: 'Fraudstop' }
 ].map(link => {
   link.key = `nav-link-${link.href}-${link.label}`
   return link

@@ -1,0 +1,94 @@
+#mp-tracker-table {
+  width: 100%;
+  border-collapse: collapse;
+  border-spacing: 0;
+
+  thead {
+    border-bottom: 2px solid $gray-900;
+  }
+
+  tr.sep {
+    height: 5px;
+    pointer-events: none;
+  }
+
+  tr.lower {
+    text-align: left;
+  }
+
+  th {
+    padding: 6px 8px 4px;
+    font-size: 0.85em;
+    text-transform: uppercase;
+
+    &:hover:not(.nosort) {
+      background: $ns-green-700;
+      cursor: pointer;
+      color: white;
+    }
+
+    &.bordered {
+      border-bottom: 1px solid $gray-400;
+    }
+    &.centered {
+      text-align: center;
+    }
+    &.unbold {
+      font-weight: 500;
+    }
+  }
+
+  tbody {
+    td {
+      padding: 10px 8px;
+      line-height: 1.2;
+      border-bottom: 1px solid $gray-200;
+      &.centered {
+        text-align: center;
+      }
+
+      &.icon {
+        &.check {
+          background: rgba($ns-green-700, 0.15);
+        }
+        &.alert {
+          background: rgba(#fbb03b, 0.15);
+          svg {
+            height: 18px !important;
+          }
+        }
+        &.cross {
+          background: rgba(#c1272d, 0.15);
+        }
+        svg {
+          height: 20px;
+          display: block;
+          margin: 0 auto;
+        }
+      }
+
+      &.bordered-left {
+        border-left: 2px solid $gray-900;
+      }
+
+      &.partylogo {
+        padding-right: 0px;
+      }
+
+      &.partylogo span {
+        height: 16px;
+        width: 16px;
+        display: block;
+        margin: 0;
+        padding: 0;
+
+        &.labor {
+          background: #e53440;
+        }
+        &.liberals {
+          background: #1c4f9c;
+        }
+      }
+    }
+  }
+}
