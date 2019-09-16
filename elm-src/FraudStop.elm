@@ -17,6 +17,7 @@ type alias Model =
     , response : SubmitResponse
     , details : Details
     , formFields : Dict String String
+    , moduleSize : ModuleSize
     }
 
 
@@ -46,6 +47,11 @@ type alias Accordion =
 type Pane
     = PersonalDetails
     | Letter
+
+
+type ModuleSize
+    = Expanded
+    | Shrunk
 
 
 type SubmitResponse
@@ -85,6 +91,7 @@ initialModel =
     , response = Nothing
     , details = initialDetails
     , formFields = Dict.fromList [ ( "firstName", "" ) ]
+    , moduleSize = Shrunk
     }
 
 
@@ -120,6 +127,7 @@ type Msg
     | SubmitForm
     | GotResponse (Result Http.Error String)
     | UpdateForm String String
+    | ToggleModuleSize ModuleSize
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -174,6 +182,17 @@ update msg model =
                     Debug.log "Model " model.formFields
             in
             ( { model | formFields = updatedFields }, Cmd.none )
+
+        ToggleModuleSize size ->
+            let
+                newSize =
+                    if size == Expanded then
+                        Shrunk
+
+                    else
+                        Expanded
+            in
+            ( { model | moduleSize = newSize }, Cmd.none )
 
 
 submitForm : Model -> Cmd Msg
@@ -332,12 +351,39 @@ letterView details currentPane =
         ]
 
 
+moduleSize : ModuleSize -> String -> String
+moduleSize size m =
+    if m == "module" then
+        if size == Expanded then
+            " medium-8 large-8"
+
+        else
+            " medium-6 large-4"
+
+    else if m == "module-opposite" then
+        if size == Expanded then
+            " medium-4 large-4"
+
+        else
+            " medium-6 large-8"
+
+    else if m == "text" then
+        if size == Expanded then
+            "shink"
+
+        else
+            "expand"
+
+    else
+        ""
+
+
 view : Model -> Html Msg
 view model =
     div []
         [ div [ class "grid-container fluid fraudstop" ]
             [ div [ class "grid-x grid-padding-x " ]
-                [ div [ class "cell small-12 medium-6 large-8 fraudstop-text" ]
+                [ div [ class ("cell small-12 fraudstop-text" ++ moduleSize model.moduleSize "module-opposite") ]
                     [ div [ class "fraudstop-text-wrapper" ]
                         [ img [ src "/static/images/newstart-logo.svg", class "logo mb-3" ] []
                         , h1 [ class "headline mb-3" ]
@@ -348,9 +394,13 @@ view model =
                         , div [] <| List.map accordionView model.accordions
                         ]
                     ]
-                , div [ class "cell small-12 medium-6 large-4 fraudstop-form mb-5" ]
+                , div [ class ("cell small-12 fraudstop-form mb-5" ++ moduleSize model.moduleSize "module") ]
                     [ div [ class "fraudstop-form-text--wrapper" ]
-                        [ h2 [ class "h6 title" ] [ text "This is a title" ]
+                        [ div [ class ("expand-container " ++ moduleSize model.moduleSize "text"), onClick (ToggleModuleSize model.moduleSize) ]
+                            [ span [] [ text (moduleSize model.moduleSize "text") ]
+                            , img [ src "/static/images/expand-icon.svg" ] []
+                            ]
+                        , h2 [ class "h6 title" ] [ text "This is a title" ]
                         , p [] [ text "FraudStop makes it quick and easy to appeal an automated debt claim against you. All you need to do is enter a few details, explain why you want to appeal the debt claim against you, and hit send - FraudStop does the rest." ]
                         ]
                     , div [ class "steps-container" ]

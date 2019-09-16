@@ -162,3 +162,30 @@
     @include rounded;
   }
 }
+
+.expand-container {
+  font-weight: 500;
+  color: white;
+  font-size: 0.7em;
+  display: flex;
+  justify-content: flex-end;
+  cursor: pointer;
+  opacity: 0.5;
+  @media screen and (max-width: 600px) {
+    display: none;
+  }
+  img {
+    max-width: 14px;
+    margin-left: 4px;
+    transform: rotate(180deg);
+  }
+  &:hover {
+    opacity: 0.8;
+    text-decoration: underline;
+  }
+  &.expand {
+    img {
+      transform: rotate(0deg);
+    }
+  }
+}
