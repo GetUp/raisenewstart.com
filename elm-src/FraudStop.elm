@@ -88,7 +88,7 @@ initialModel =
     { accordions = initialAccordions
     , firstName = ""
     , debtReason = ""
-    , currentPane = PersonalCircumstances
+    , currentPane = PersonalDetails
     , response = Nothing
     , details = initialDetails
     , formFields = Dict.fromList [ ( "firstName", "" ) ]
@@ -379,13 +379,13 @@ letterView details currentPane =
                 []
             ]
         , button [ class "btn btn-primary btn-outline mt-4 mr-2", onClick GoToPersonalDetails ] [ text "Back" ]
-        , button [ class "btn btn-primary mt-4", onClick SubmitForm ] [ text "Next" ]
+        , button [ class "btn btn-primary mt-4", onClick GoToPersonalCircumstances ] [ text "Next" ]
         ]
 
 
 personalCircumstancesView : Details -> Pane -> Html Msg
-personalCircumstancesView details pane =
-    div [ class "form-container personal-circumstances-container" ]
+personalCircumstancesView details currentPane =
+    div [ class ("form-container personal-circumstances-container" ++ togglePane PersonalCircumstances currentPane) ]
         [ label [ class "mb-3" ] [ text "Do you have any specific personal circumstances which may have impacted your ability to report income or caused you significant hardship?" ]
         , div [ class "radio-buttons" ]
             [ input [ class "mr-2", type_ "radio", name "impacted_ability_to_report_income", value "Yes" ] []
