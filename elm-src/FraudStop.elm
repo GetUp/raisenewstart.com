@@ -33,7 +33,7 @@ type alias Details =
     , crn : String
     , debtReason : String
 
-    -- , personalCircumstances : List String
+    -- , personalCircumstancess : List String
     }
 
 
@@ -47,6 +47,7 @@ type alias Accordion =
 type Pane
     = PersonalDetails
     | Letter
+    | PersonalCircumstances
 
 
 type ModuleSize
@@ -87,7 +88,7 @@ initialModel =
     { accordions = initialAccordions
     , firstName = ""
     , debtReason = ""
-    , currentPane = Letter
+    , currentPane = PersonalCircumstances
     , response = Nothing
     , details = initialDetails
     , formFields = Dict.fromList [ ( "firstName", "" ) ]
@@ -123,7 +124,8 @@ type Msg
     | SetName String String
     | SetdebtReason String
     | GoToLetter
-    | GoToForm
+    | GoToPersonalDetails
+    | GoToPersonalCircumstances
     | SubmitForm
     | GotResponse (Result Http.Error String)
     | UpdateForm String String
@@ -163,8 +165,11 @@ update msg model =
         GoToLetter ->
             ( { model | currentPane = Letter }, Cmd.none )
 
-        GoToForm ->
+        GoToPersonalDetails ->
             ( { model | currentPane = PersonalDetails }, Cmd.none )
+
+        GoToPersonalCircumstances ->
+            ( { model | currentPane = PersonalCircumstances }, Cmd.none )
 
         SubmitForm ->
             ( model, submitForm model )
@@ -246,6 +251,33 @@ showAlert res =
 
         Res (Err _) ->
             "Error"
+
+
+moduleSize : ModuleSize -> String -> String
+moduleSize size m =
+    if m == "module" then
+        if size == Expanded then
+            " medium-8 large-8"
+
+        else
+            " medium-6 large-4"
+
+    else if m == "module-opposite" then
+        if size == Expanded then
+            " medium-4 large-4"
+
+        else
+            " medium-6 large-8"
+
+    else if m == "text" then
+        if size == Expanded then
+            "shink"
+
+        else
+            "expand"
+
+    else
+        ""
 
 
 
@@ -346,36 +378,44 @@ letterView details currentPane =
                 ]
                 []
             ]
-        , button [ class "btn btn-primary btn-outline mt-4 mr-2", onClick GoToForm ] [ text "Back" ]
+        , button [ class "btn btn-primary btn-outline mt-4 mr-2", onClick GoToPersonalDetails ] [ text "Back" ]
         , button [ class "btn btn-primary mt-4", onClick SubmitForm ] [ text "Next" ]
         ]
 
 
-moduleSize : ModuleSize -> String -> String
-moduleSize size m =
-    if m == "module" then
-        if size == Expanded then
-            " medium-8 large-8"
-
-        else
-            " medium-6 large-4"
-
-    else if m == "module-opposite" then
-        if size == Expanded then
-            " medium-4 large-4"
-
-        else
-            " medium-6 large-8"
-
-    else if m == "text" then
-        if size == Expanded then
-            "shink"
-
-        else
-            "expand"
-
-    else
-        ""
+personalCircumstancesView : Details -> Pane -> Html Msg
+personalCircumstancesView details pane =
+    div [ class "form-container personal-circumstances-container" ]
+        [ label [ class "mb-3" ] [ text "Do you have any specific personal circumstances which may have impacted your ability to report income or caused you significant hardship?" ]
+        , div [ class "radio-buttons" ]
+            [ input [ class "mr-2", type_ "radio", name "impacted_ability_to_report_income", value "Yes" ] []
+            , span [ class "mr-3" ] [ text "Yes" ]
+            , input [ class "mr-2", type_ "radio", name "impacted_ability_to_report_income", value "No" ] []
+            , span [] [ text "No" ]
+            ]
+        , br [] []
+        , br [] []
+        , label [ class "mb-3" ] [ text "Which specific personal circumstances apply to your case? (choose all those that apply)" ]
+        , div [ class "radio-buttons" ]
+            [ input [ id "illness", class "mr-2 mb-3", type_ "checkbox", value "Illness (including mental illness)" ] []
+            , label [ for "illness", class "mr-3" ] [ text "Illness (including mental illness)" ]
+            , br [] []
+            , input [ id "financial-hardship", class "mr-2 mb-3", type_ "checkbox", value "Financial hardship" ] []
+            , label [ for "financial-hardship", class "mr-3" ] [ text "Financial hardship" ]
+            , br [] []
+            , input [ id "addiction", class "mr-2 mb-3", type_ "checkbox", value "Addiction" ] []
+            , label [ for "addicition", class "mr-3" ] [ text "Addiction" ]
+            , br [] []
+            , input [ id "homelessness", class "mr-2 mb-3", type_ "checkbox", value "Homelessness" ] []
+            , label [ for "homelessness", class "mr-3" ] [ text "Homelessness" ]
+            , br [] []
+            , input [ id "other", class "mr-2 mb-3", type_ "checkbox", value "Other" ] []
+            , label [ for "other", class "mr-3" ] [ text "Other" ]
+            , br [] []
+            , input [ class "mr-2 mb-3 mt-2 other-inputbox", type_ "text", placeholder "Other circumstance" ] []
+            ]
+        , a [ class "btn btn-primary mt-5" ] [ text "Submit" ]
+        ]
 
 
 view : Model -> Html Msg
@@ -404,12 +444,13 @@ view model =
                         , p [] [ text "FraudStop makes it quick and easy to appeal an automated debt claim against you. All you need to do is enter a few details, explain why you want to appeal the debt claim against you, and hit send - FraudStop does the rest." ]
                         ]
                     , div [ class "steps-container" ]
-                        [ div [ class ("step" ++ isActivePane PersonalDetails model.currentPane), onClick GoToForm ] [ text "About you" ]
+                        [ div [ class ("step" ++ isActivePane PersonalDetails model.currentPane), onClick GoToPersonalDetails ] [ text "About you" ]
                         , div [ class ("step" ++ isActivePane Letter model.currentPane), onClick GoToLetter ] [ text "Your story" ]
-                        , div [ class "step" ] [ text "Other details" ]
+                        , div [ class ("step" ++ isActivePane PersonalCircumstances model.currentPane), onClick GoToPersonalCircumstances ] [ text "Other details" ]
                         ]
                     , personalDetailsView model.details model model.currentPane
                     , letterView model.details model.currentPane
+                    , personalCircumstancesView model.details model.currentPane
                     ]
                 ]
             ]

@@ -3,6 +3,8 @@
 }
 .form-container {
   padding: 0 64px;
+  max-width: 700px;
+  min-height: 70vmin;
 
   &.hide {
     display: none;
@@ -186,6 +188,29 @@
   &.expand {
     img {
       transform: rotate(0deg);
+    }
+  }
+}
+
+.personal-circumstances-container {
+  color: $gray-900;
+  font-weight: 500;
+  & > label {
+    display: block;
+    margin-bottom: 16px;
+  }
+
+  .other-inputbox {
+    height: 36px;
+    width: 100%;
+    border: 1px solid $gray-400;
+    padding-left: 8px;
+    background: $gray-100;
+    @include rounded;
+  }
+  .radio-buttons {
+    input {
+      // margin
     }
   }
 }
