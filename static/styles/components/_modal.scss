@@ -41,6 +41,7 @@ $modal-padding: 32px;
     @media only screen and (min-width: 600px) {
       height: auto;
       width: auto;
+      width: 100%;
       // top: 50%;
       position: relative;
       // transform: translateY(-50%);
@@ -155,6 +156,10 @@ $modal-padding: 32px;
   flex-wrap: wrap;
   box-shadow: 0 15px 50px 8px rgba(black, 0.7);
 
+  &.spinner {
+    box-shadow: none;
+  }
+
   .modal-v2 {
     max-width: 600px;
     background: white;
@@ -164,7 +169,7 @@ $modal-padding: 32px;
     justify-content: space-between;
     padding: 32px 16px 48px 16px;
     flex-wrap: wrap-reverse;
-    overflow: scroll;
+    overflow: auto;
     border-radius: 0;
     &-image-wrapper {
       max-height: 125px;
@@ -208,6 +213,23 @@ $modal-padding: 32px;
 
       input {
         box-shadow: none;
+        display: block;
+        box-sizing: border-box;
+        width: 100%;
+        height: 2.4375rem;
+        margin: 0 0 1rem;
+        padding: 0.5rem;
+        border: 1px solid #cacaca;
+        border-radius: 3px;
+        background-color: #fefefe;
+        box-shadow: none;
+        font-family: inherit;
+        font-size: 1rem;
+        font-weight: 400;
+        line-height: 1.5;
+        color: #0a0a0a;
+        transition: box-shadow 0.5s, border-color 0.25s ease-in-out;
+        -webkit-appearance: none;
         &:focus {
           border-color: $gu-orange;
         }
@@ -260,7 +282,7 @@ $modal-padding: 32px;
     // padding: 64px;
     background: none;
     height: auto;
-    overflow: scroll;
+    overflow: auto;
     .modal-v2 {
       padding: 32px;
       border-radius: calc(#{$global-radius} * 2);

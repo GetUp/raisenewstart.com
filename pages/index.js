@@ -2,6 +2,9 @@ import React, { useState, useEffect, useRef } from 'react'
 import Layout from '../components/Layout'
 import Form from './form.js'
 import Nav from '../components/Nav'
+import LogoAnimation from '../components/LogoAnimation'
+import Modal from '../components/Modal'
+import content from '../content/index.md'
 
 const PageGrid = ({ children, className }) => (
   <div className='grid-container'>
@@ -25,38 +28,38 @@ const WavePattern = ({ colour }) => {
   return <div className='wave-pattern mt-5' style={{ backgroundImage: getImage() }} />
 }
 
-const Hero = () => (
+const Hero = ({ data }) => (
   <>
     <div
       className='heart-background'
       style={{ backgroundImage: `url(/static/images/heart-pattern.svg)` }}>
       <PageGrid className='small-12 hero-container'>
-        <img src='/static/images/newstart-logo.svg' className='logo' />
+        {/* <img src='/static/images/newstart-logo.svg' className='logo' /> */}
+        <LogoAnimation className='logo' />
         <div className='hero-text-container'>
           <h1 className='mb-4'>
-            In a country as wealthy as Australia - being locked out of paid work,
-            shouldn't mean being locked into poverty. <span>Raise Newstart.</span>
+            {data.title}
+            <span className='ml-2'>{data.cta}</span>
           </h1>
-          <a href='#' className='btn'>
-            Join the campaign
-          </a>
+          <Modal
+            href='https://www.getup.org.au/campaigns/federal-election-2018-19/election-home/join-us'
+            buttonText={data.button}
+            className='btn'
+            heading='Blah'
+          />
         </div>
       </PageGrid>
     </div>
     <PageGrid className='small-12 large-8'>
-      <p className='hero-blurb mt-5 mb-0'>
-        Lorem ipsum dolor, sit amet consectetur adipisicing elit. Asperiores, iusto. Illo,
-        voluptatum natus. Nemo animi exercitationem ad distinctio. Omnis et officia
-        possimus quam minus expedita reiciendis dignissimos laborum officiis adipisci?
-      </p>
+      <p className='hero-blurb mt-5 mb-0'>{data.blurb}</p>
     </PageGrid>
   </>
 )
 
-const IncomeCalculator = () => {
-  const [userIncome, setUserIncome] = useState(52000)
-  const [income, setIncome] = useState(52000)
-  const [maxIncome, setMaxIncome] = useState(52000)
+const IncomeCalculator = ({ data }) => {
+  const [userIncome, setUserIncome] = useState(data.defaultincome)
+  const [income, setIncome] = useState(data.defaultincome)
+  const [maxIncome, setMaxIncome] = useState(data.defaultincome)
 
   const calculateWidth = wagePerWeek => {
     return ((wagePerWeek * 52) / maxIncome) * 100 + '%'
@@ -71,7 +74,7 @@ const IncomeCalculator = () => {
   return (
     <PageGrid className='small-12 my-5'>
       <label for='annual-income' className='annual-income-label'>
-        Enter your annual income to compare
+        {data.title}
       </label>{' '}
       <div className='annual-income-input--container'>
         <input
@@ -91,32 +94,14 @@ const IncomeCalculator = () => {
             <span>${parseInt(income / 52)}/week</span>
           </div>
         </div>
-        <div className='bar' style={{ width: calculateWidth(720) }}>
-          <div>
-            Minimum wage<sup>1</sup>
-            <span>$720/week</span>
+        {data.otherincome.map(item => (
+          <div className='bar' style={{ width: calculateWidth(item.wagesPerWeek) }}>
+            <div>
+              {item.title}
+              <span>${item.wagesPerWeek}/week</span>
+            </div>
           </div>
-        </div>
-        <div className='bar' style={{ width: calculateWidth(450) }}>
-          <div>
-            Rate of pension<sup>2</sup>
-            <span>$450/week</span>
-          </div>
-        </div>
-        <div className='bar' style={{ width: calculateWidth(430) }}>
-          <div>
-            Cost of basic essentials<sup>3</sup>
-            <span>$430/week</span>
-          </div>
-        </div>
-        <div
-          className='bar orange'
-          style={{ width: ((278 * 52) / maxIncome) * 100 + '%' }}>
-          <div>
-            Newstart
-            <span>$278/week</span>
-          </div>
-        </div>
+        ))}
       </div>
     </PageGrid>
   )
@@ -136,7 +121,11 @@ const Testimonials = ({ data }) => (
               'flex-dir-row-reverse'}`}>
             <div className='small-8 large-8 columns'>
               <p>{item.quote}</p>
-              <small>{item.name}</small>
+              <small>
+                <b>{item.name}</b>
+              </small>
+              <br />
+              <small>{item.title}</small>
             </div>
             <div className='small-4 large-4 columns'>
               <img src={item.image} className='pt-5' />
@@ -262,7 +251,7 @@ const Stats = () => (
   </>
 )
 
-const FooterCTA = () => (
+const FooterCTA = ({ data }) => (
   <>
     <div
       className='heart-background'
@@ -270,14 +259,14 @@ const FooterCTA = () => (
       <div className='grid-container footer'>
         <div className='grid-x'>
           <div className='small-12 columns'>
-            <h2 className='footer-blurb h5'>
-              In a country as wealthy as Australia – being locked out of paid work,
-              shouldn’t mean being locked into poverty.
-            </h2>
-            <h3 className='footer-heading h1'>Raise Newstart.</h3>
-            <a href='#' className='btn'>
-              Join the campaign
-            </a>
+            <h2 className='footer-blurb h5'>{data.subtitle}</h2>
+            <h3 className='footer-heading h1'>{data.title}</h3>
+            <Modal
+              href={data.link}
+              buttonText='Join the campaign'
+              className='btn'
+              heading={data.moduleHeading}
+            />
           </div>
         </div>
       </div>
@@ -286,28 +275,15 @@ const FooterCTA = () => (
 )
 
 const Index = () => {
-  const testimonials = [
-    {
-      name: 'Patrick Stewart',
-      quote:
-        'Lorem ipsum dolor sit amet consectetur, adipisicing elit. Quisquam atque fugiat fuga, corporis cupiditate, aliquid animi consequatur nemo iure, deleniti reiciendis vel voluptatem officia vitae sed explicabo totam autem recusandae.',
-      image: '/static/images/patrick.png'
-    },
-    {
-      name: 'Patrick Stewart',
-      quote:
-        'Lorem ipsum dolor sit amet consectetur, adipisicing elit. Quisquam atque fugiat fuga, corporis cupiditate, aliquid animi consequatur nemo iure, deleniti reiciendis vel voluptatem officia vitae sed explicabo totam autem recusandae.',
-      image: '/static/images/patrick.png'
-    }
-  ]
+  const c = content.attributes
   return (
     <>
-      <Nav/>
-      <Hero />
-      <IncomeCalculator />
-      <Testimonials data={testimonials} />
+      <Nav />
+      <Hero data={c.hero} />
+      <IncomeCalculator data={c.incomecalculator} />
+      <Testimonials data={c.testimonials} />
       <Stats />
-      <FooterCTA />
+      <FooterCTA data={c.footercta} />
     </>
   )
 }

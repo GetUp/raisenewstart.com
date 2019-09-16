@@ -1,7 +1,6 @@
 import React, { Component } from 'react'
 import Popup from 'reactjs-popup'
 import Form from '../components/Form'
-// import Spinner from '../images/spinner.svg'
 
 import { FacebookShareButton, TwitterShareButton, EmailShareButton } from 'react-share'
 /* eslint-disable */
@@ -19,7 +18,7 @@ class Modal extends Component {
       // postUrl: 'https://jsonplaceholder.typicode.com/posts',
       postUrl: 'https://www.getup.org.au/api/take_action_with_external',
       isWaitingForResponse: false,
-      isFormSubmitted: true,
+      isFormSubmitted: false,
       shareInfo: {
         url: 'https://www.getup.org.au/',
         text:
@@ -111,7 +110,7 @@ class Modal extends Component {
         handleBlur={this.handleBlur}
         emailValid={this.state.emailValid}
         heading={this.props.heading}
-        button={this.props.button}
+        button={this.props.buttonText}
       />
     </>
   )
@@ -120,7 +119,7 @@ class Modal extends Component {
     <div className="modal-v2-container spinner">
       <div className="modal-v2">
         <div className="modal-v2-image-wrapper">
-          <img src={Spinner} />
+          <img src="/static/images/spinner.svg" />
         </div>
       </div>
     </div>
@@ -178,7 +177,6 @@ class Modal extends Component {
         <Popup
           trigger={
             <a className={`${notButton ? '' : 'btn'} ${className}`}>
-              {' '}
               {this.props.buttonText}
             </a>
           }

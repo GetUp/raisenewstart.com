@@ -6,91 +6,66 @@ collections:
   - name: 'pages'
     label: 'Pages'
     files:
-      - label: 'Home'
-        name: 'home'
-        file: 'content/home.md'
+      - label: 'Index'
+        name: 'index'
+        file: 'contnet/index.md'
         fields:
           - {
-              label: Hero,
-              name: hero,
-              widget: object,
-              fields:
-                [
-                  { label: 'heading', name: 'heading', widget: 'text' },
-                  { label: 'subheading', name: 'subheading', widget: 'text' },
-                  { label: 'button name', name: 'buttonName', widget: 'string' },
-                ],
-            }
+            label: Hero,
+            name: hero,
+            widget: object,
+            fields:
+              [
+                { label: 'title', name: 'title', widget: 'string' },
+                { label: 'cta', name: 'cta', widget: 'string' },
+                { label: 'button', name: 'button', widget: 'string' },
+                { label: 'blurb', name: 'blurb', widget: 'text' },
+              ]
+          }
           - {
-              label: Middle,
-              name: middle,
-              widget: object,
-              fields:
-                [
-                  { label: 'bold Paragraph', name: 'boldPara', widget: 'text' },
-                  { label: 'para', name: 'para', widget: 'markdown' },
-                ],
-            }
-          - {
-              label: Bottom,
-              name: bottom,
-              widget: object,
-              fields:
-                [
-                  { label: 'bold Paragraph', name: 'boldPara', widget: 'text' },
-                  { label: 'para', name: 'para', widget: 'markdown' },
-                  { label: 'para2', name: 'para2', widget: 'text' },
-                ],
-            }
-          - {
-              label: CTA,
-              name: cta,
-              widget: object,
-              fields:
-                [
-                  { label: 'text', name: 'text', widget: 'text' },
-                  { label: 'button name', name: 'buttonName', widget: 'string' },
-                ],
-            }
+            label: Income Calculator,
+            name: incomecalculator,
+            widget: object,
+            fields:
+              [
+                { label: 'title', name: 'title', widget: 'string' },
+                { label: 'defaultincome', name: 'defaultincome', widget: 'string' },
+                {
+                  label: 'otherincome',
+                  name: 'otherincome',
+                  widget: 'list',
+                  fields:
+                    - { label: title, name: title, widget: string }
+                    - { label: wagesPerWeek, name: wagesPerWeek, widget: string }
+                },
+              ]
+          }
           - label: 'Locations'
             name: 'locations'
+            widget: 'list'
+            fields:
+              - { label: name, name: name, widget: string }
+              - { label: title, name: title, widget: string }
+              - { label: quote, name: quote, widget: text }
+              - { label: link, name: link, widget: string }
+          - label: 'testimonials'
+            name: 'testimonials'
             widget: 'list'
             fields:
               - { label: city, name: city, widget: string }
               - { label: date, name: date, widget: string }
               - { label: location, name: location, widget: string }
-              - { label: link, name: link, widget: string }
-      - label: 'About'
-        name: 'about'
-        file: 'content/about.md'
-        fields:
-            - { label: heading, name: heading, widget: string }
-            - { label: body, name: body, widget: text }
-            - {
-              label: alliance,
-              name: alliance,
-              widget: object,
-              fields:
-                [
-                  { label: 'heading', name: 'heading', widget: 'text' },
-                  { label: 'body', name: 'body', widget: 'text' },
-                ],
-            }
-      - label: 'Origin'
-        name: 'origin'
-        file: 'content/origin.md'
-        fields:
-            - { label: heading, name: heading, widget: string }
-            - { label: body, name: copy, widget: markdown }
-            - { label: image, name: image, widget: image }
-            - {
-              label: notinsydney,
-              name: notinsydney,
-              widget: object,
-              fields:
-                [
-                  { label: 'text', name: 'text', widget: 'text' },
-                  { label: 'link', name: 'link', widget: 'string' },
-                ],
-            }
-
+              - { label: image, name: imag, widget: image }
+          - {
+            label: footercta,
+            name: footercta,
+            widget: object,
+            fields:
+              [
+                { label: 'title', name: 'title', widget: 'string' },
+                { label: 'subtitle', name: 'subtitle', widget: 'text' },
+                { label: 'button', name: 'button', widget: 'string' },
+                { label: 'link', name: 'link', widget: 'string' },
+                { label: 'moduleHeading', name: 'moduleHeading', widget: 'text' },
+              ]
+          }

@@ -1,0 +1,164 @@
+@mixin rounded {
+  border-radius: $global-radius;
+}
+.form-container {
+  padding: 0 64px;
+
+  &.hide {
+    display: none;
+  }
+  .two-column {
+    display: flex;
+    .form-item {
+      flex: 1 0 auto;
+      &:nth-child(1) {
+        margin-right: 6px;
+      }
+      &:nth-child(2) {
+        margin-left: 6px;
+      }
+    }
+  }
+
+  .form-item {
+    margin-bottom: 12px;
+    label {
+      font-size: 0.875em;
+      font-weight: 600;
+      display: block;
+      color: $gray-800;
+    }
+
+    textarea,
+    input {
+      height: 36px;
+      width: 100%;
+      border: 1px solid $gray-400;
+      padding-left: 8px;
+      background: $gray-100;
+      @include rounded;
+
+      &:focus {
+        outline: none;
+        box-shadow: 0 0 0 0.2em $gray-200;
+      }
+
+      &.has-error {
+        border: 1px solid red;
+        &:focus {
+          box-shadow: 0 0 0 0.2em rgba(red, 0.2);
+        }
+      }
+
+      &::placeholder {
+        color: $gray-400;
+        font-weight: 500;
+      }
+    }
+
+    textarea {
+      height: 400px;
+    }
+
+    small {
+      color: red;
+      font-weight: 600;
+      display: flex;
+    }
+  }
+}
+
+.fraudstop {
+  // background: $ns-green-700;
+
+  &-text {
+    background: $ns-green-700;
+    // height: 100vh;
+    background: $gray-900;
+    color: white;
+    padding: 64px !important;
+    // overflow: scroll;
+
+    &-wrapper {
+      .logo {
+        max-width: 120px;
+      }
+    }
+  }
+
+  &-form {
+    // height: 100vh;
+    padding: 0px !important;
+    // overflow: scroll;
+    &-text--wrapper {
+      background: $ns-green-700;
+      border-bottom: 2px solid $gray-300;
+      padding: 32px;
+      h2 {
+        color: $ns-green-700;
+        font-weight: bold;
+        color: white;
+      }
+      p {
+        font-size: 0.9rem;
+        color: white;
+        line-height: 1.4;
+        margin-bottom: 0;
+      }
+    }
+
+    .steps-container {
+      display: flex;
+      width: 100%;
+      justify-content: space-evenly;
+      font-weight: bold;
+      font-size: 0.85em;
+      margin-bottom: 32px;
+      .step {
+        padding: 8px;
+        border-top: 4px solid rgba(white, 0);
+        transform: translateY(-3px);
+        width: 100%;
+        text-align: center;
+        color: $gray-600;
+        cursor: pointer;
+        &.active {
+          color: $ns-orange-500;
+          border-top: 4px solid $ns-orange-500;
+        }
+      }
+    }
+  }
+}
+
+.alert-container {
+  background: rgba($ns-green-700, 0.1);
+  border: 1px solid $ns-green-700;
+  padding: 8px;
+  border-radius: 0.2em;
+  margin-bottom: 32px;
+  p {
+    font-weight: 500;
+    font-size: 0.9em;
+    margin: 0;
+    color: $ns-green-700;
+  }
+
+  .personal-info {
+    margin-bottom: 8px;
+  }
+}
+
+.letter-container {
+  textarea {
+    height: 36px;
+    width: 100%;
+    border: 1px solid $gray-400;
+    padding-left: 8px;
+    background: $gray-100;
+    height: 200px;
+    padding: 16px;
+    line-height: 1.4;
+    @include rounded;
+  }
+}

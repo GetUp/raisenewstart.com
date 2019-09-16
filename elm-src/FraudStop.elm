@@ -56,8 +56,8 @@ type SubmitResponse
 initialAccordions : List Accordion
 initialAccordions =
     [ { open = False, header = "How does it work?", content = "Lorem ipsum" }
-    , { open = False, header = "Why did we build Fraudstop?", content = "Lorem ipsum" }
-    , { open = False, header = "Some very important legal information.", content = "Lorem ipsum" }
+    , { open = False, header = "Why did we build Fraudstop?", content = "FraudStop makes it quick and easy to appeal an automated debt claim against you. All you need to do is enter a few details, explain why you want to appeal the debt claim against you, and hit send - FraudStop does the rest. FraudStop makes it quick and easy to appeal an automated debt claim against you. All you need to do is enter a few details, explain why you want to appeal the debt claim against you, and hit send - FraudStop does the rest. FraudStop makes it quick and easy to appeal an automated debt claim against you. All you need to do is enter a few details, explain why you want to appeal the debt claim against you, and hit send - FraudStop does the rest. FraudStop makes it quick and easy to appeal an automated debt claim against you. All you need to do is enter a few details, explain why you want to appeal the debt claim against you, and hit send - FraudStop does the rest. FraudStop makes it quick and easy to appeal an automated debt claim against you. All you need to do is enter a few details, explain why you want to appeal the debt claim against you, and hit send - FraudStop does the rest. FraudStop makes it quick and easy to appeal an automated debt claim against you. All you need to do is enter a few details, explain why you want to appeal the debt claim against you, and hit send - FraudStop does the rest." }
+    , { open = False, header = "Some very important legal information.", content = "FraudStop makes it quick and easy to appeal an automated debt claim against you. All you need to do is enter a few details, explain why you want to appeal the debt claim against you, and hit send - FraudStop does the rest. FraudStop makes it quick and easy to appeal an automated debt claim against you. All you need to do is enter a few details, explain why you want to appeal the debt claim against you, and hit send - FraudStop does the rest. FraudStop makes it quick and easy to appeal an automated debt claim against you. All you need to do is enter a few details, explain why you want to appeal the debt claim against you, and hit send - FraudStop does the rest." }
     ]
 
 
@@ -81,7 +81,7 @@ initialModel =
     { accordions = initialAccordions
     , firstName = ""
     , debtReason = ""
-    , currentPane = PersonalDetails
+    , currentPane = Letter
     , response = Nothing
     , details = initialDetails
     , formFields = Dict.fromList [ ( "firstName", "" ) ]
@@ -116,6 +116,7 @@ type Msg
     | SetName String String
     | SetdebtReason String
     | GoToLetter
+    | GoToForm
     | SubmitForm
     | GotResponse (Result Http.Error String)
     | UpdateForm String String
@@ -154,6 +155,9 @@ update msg model =
         GoToLetter ->
             ( { model | currentPane = Letter }, Cmd.none )
 
+        GoToForm ->
+            ( { model | currentPane = PersonalDetails }, Cmd.none )
+
         SubmitForm ->
             ( model, submitForm model )
 
@@ -166,7 +170,8 @@ update msg model =
                     Dict.insert key value model.formFields
 
                 _ =
-                    Debug.log "Updated Fields " updatedFields
+                    -- Debug.log "Updated Fields " updatedFields
+                    Debug.log "Model " model.formFields
             in
             ( { model | formFields = updatedFields }, Cmd.none )
 
@@ -200,6 +205,15 @@ togglePane pane currentPane =
 
     else
         " hide"
+
+
+isActivePane : Pane -> Pane -> String
+isActivePane pane currentPane =
+    if pane == currentPane then
+        " active"
+
+    else
+        ""
 
 
 showAlert : SubmitResponse -> String
@@ -245,64 +259,88 @@ personalDetailsView details model currentPane =
     Html.form
         [ class ("form-container" ++ togglePane PersonalDetails currentPane), onSubmit GoToLetter ]
         [ div [ class "form-item" ]
-            [ label [ class "mb-1", for "firstName" ] [ text "First Name" ]
+            [ label [ class "", for "firstName" ] [ text "First Name" ]
             , input [ type_ "text", id "firstName", name "firstName", placeholder "First Name", onInput (UpdateForm "firstName") ] []
             ]
         , div [ class "form-item" ]
-            [ label [ class "mb-1", for "lastName" ] [ text "Last Name" ]
-            , input [ type_ "text", id "lastName", name "lastName", placeholder "Last Name", value details.lastName ] []
+            [ label [ class "", for "lastName" ] [ text "Last Name" ]
+            , input [ type_ "text", id "lastName", name "lastName", placeholder "Last Name", onInput (UpdateForm "lastName") ] []
             ]
         , div [ class "form-item" ]
-            [ label [ class "mb-1", for "email" ] [ text "Email" ]
+            [ label [ class "", for "email" ] [ text "Email" ]
             , input [ type_ "email", id "email", name "email", placeholder "Email", value details.email ] []
             ]
         , div [ class "form-item" ]
-            [ label [ class "mb-1", for "address" ] [ text "Address" ]
+            [ label [ class "", for "address" ] [ text "Address" ]
             , input [ type_ "text", id "address", name "address", placeholder "Address", value details.address ] []
             ]
         , div [ class "form-item" ]
-            [ label [ class "mb-1", for "suburb" ] [ text "Suburb" ]
+            [ label [ class "", for "suburb" ] [ text "Suburb" ]
             , input [ type_ "text", id "suburb", name "suburb", placeholder "Suburb", value details.suburb ] []
             ]
         , div [ class "form-item" ]
-            [ label [ class "mb-1", for "postcode" ] [ text "Post Code" ]
+            [ label [ class "", for "postcode" ] [ text "Post Code" ]
             , input [ type_ "text", id "postcode", name "postcode", placeholder "Post Code", value details.postcode, pattern "^[0-9]{4}$", title "Your postcode should be 4 digits" ] []
             ]
         , div [ class "form-item" ]
-            [ label [ class "mb-1", for "dob" ] [ text "Date of Birth" ]
+            [ label [ class "", for "dob" ] [ text "Date of Birth" ]
             , input [ type_ "date", id "dob", name "dob", placeholder "dd/mm/yyyy", value details.dob ] []
             ]
         , div [ class "form-item" ]
-            [ label [ class "mb-1", for "Phone" ] [ text "Phone" ]
+            [ label [ class "", for "Phone" ] [ text "Phone" ]
             , input [ type_ "text", id "Phone", name "Phone", placeholder "Phone", value details.phone, pattern "^[0-9]{10,16}$" ] []
             ]
         , div [ class "form-item" ]
-            [ label [ class "mb-1", for "crn" ] [ text "Centrelink Reference Number (CRN)" ]
+            [ label [ class "", for "crn" ] [ text "Centrelink Reference Number (CRN)" ]
             , input [ type_ "text", id "crn", name "crn", placeholder "123456789A", value details.crn, pattern "^[0-9]{9}[a-zA-Z]{1}$", title "Your Centrelink CRN should be 9 digits followed by 1 letter" ] []
             ]
-        , button [ type_ "submit", class "btn btn-primary btn-large mt-4" ] [ text "Next" ]
+        , button [ type_ "submit", class "btn btn-primary mt-4" ] [ text "Next" ]
         ]
 
 
 letterView : Details -> Pane -> Html Msg
 letterView details currentPane =
     div [ class ("form-container" ++ togglePane Letter currentPane) ]
-        [ div [ class "form-item" ]
-            [ label [ class "mb-1", for "debtReason" ] [ text "debtReason" ]
-            , textarea [ id "debtReason", name "debtReason", placeholder "debtReason", value details.debtReason, onInput SetdebtReason ] []
+        [ div [ class "alert-container" ]
+            [ p [ class "" ]
+                [ text "A sample of the letter. Your reasons will be added to the letter that is sent directly to Centrelink. If you've made a mistake while entering your details, press back to edit it."
+                ]
             ]
-        , button [ class "btn btn-primary btn-large mt-4", onClick SubmitForm ] [ text "Submit" ]
+        , div [ class "letter-container" ]
+            [ p [] [ text "I am writing to request a review by an Authorised Review Officer. My personal details, the decision I am appealing against, and my reasons for appealing are set out below." ]
+            , p [ class "mb-0" ] [ text ("Name: " ++ details.firstName) ]
+            , p [ class "mb-0" ] [ text "Date of birth: " ]
+            , p [ class "mb-0" ] [ text "Address: " ]
+            , p [ class "mb-0" ] [ text "CRN: " ]
+            , p [ class "mb-0" ] [ text "Telephone: " ]
+            , p [] [ text "Email: " ]
+            , p [] [ text "I am appealing the decision to subject me to an automatically generated compliance intervention process." ]
+            , p [] [ b [] [ text "My reasons for appealing are:" ] ]
+            , textarea
+                [ id "debtReason"
+                , class "debt-reason"
+                , name "debtReason"
+                , placeholder "Explain to Centrelink in a few sentences why you feel the letter you received is incorrect. Please keep it short and aim to stick to the facts as much as possible."
+
+                -- , value details.debtReason
+                , onInput SetdebtReason
+                ]
+                []
+            ]
+        , button [ class "btn btn-primary btn-outline mt-4 mr-2", onClick GoToForm ] [ text "Back" ]
+        , button [ class "btn btn-primary mt-4", onClick SubmitForm ] [ text "Next" ]
         ]
 
 
 view : Model -> Html Msg
 view model =
     div []
-        [ div [ class "header-container" ]
-            [ div [ class "grid-container" ]
-                [ div [ class "grid-x grid-padding-x align-center" ]
-                    [ div [ class "cell small-12 medium-10 large-8 pad-x" ]
-                        [ h1 [ class "headline mb-3" ]
+        [ div [ class "grid-container fluid fraudstop" ]
+            [ div [ class "grid-x grid-padding-x " ]
+                [ div [ class "cell small-12 medium-6 large-8 fraudstop-text" ]
+                    [ div [ class "fraudstop-text-wrapper" ]
+                        [ img [ src "/static/images/newstart-logo.svg", class "logo mb-3" ] []
+                        , h1 [ class "headline mb-3" ]
                             [ strong [] [ text "Fight back against Centrelink debt claims" ]
                             ]
                         , h2 [ class "h5 mb-4" ]
@@ -310,13 +348,17 @@ view model =
                         , div [] <| List.map accordionView model.accordions
                         ]
                     ]
-                ]
-            ]
-        , h3 [] [ text (showAlert model.response) ]
-        , div [ class "grid-container" ]
-            [ div [ class "grid-x grid-padding-x" ]
-                [ div [ class "cell small-12 medium-offset-1 medium-7 large-offset-2 large-6 pad-x mt-5 mb-5" ]
-                    [ personalDetailsView model.details model model.currentPane
+                , div [ class "cell small-12 medium-6 large-4 fraudstop-form mb-5" ]
+                    [ div [ class "fraudstop-form-text--wrapper" ]
+                        [ h2 [ class "h6 title" ] [ text "This is a title" ]
+                        , p [] [ text "FraudStop makes it quick and easy to appeal an automated debt claim against you. All you need to do is enter a few details, explain why you want to appeal the debt claim against you, and hit send - FraudStop does the rest." ]
+                        ]
+                    , div [ class "steps-container" ]
+                        [ div [ class ("step" ++ isActivePane PersonalDetails model.currentPane), onClick GoToForm ] [ text "About you" ]
+                        , div [ class ("step" ++ isActivePane Letter model.currentPane), onClick GoToLetter ] [ text "Your story" ]
+                        , div [ class "step" ] [ text "Other details" ]
+                        ]
+                    , personalDetailsView model.details model model.currentPane
                     , letterView model.details model.currentPane
                     ]
                 ]

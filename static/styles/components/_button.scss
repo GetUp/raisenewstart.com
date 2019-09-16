@@ -181,3 +181,26 @@ Default styles:
     transform: none !important;
   }
 }
+
+.btn-social {
+  color: white !important;
+  text-align: center;
+  &.fb {
+    background: #4267b2;
+    &:hover {
+      background: lighten(#4267b2, 10);
+    }
+  }
+  &.twitter {
+    background: #1b95e0;
+    &:hover {
+      background: lighten(#1b95e0, 10);
+    }
+  }
+  &.email {
+    background: #555;
+    &:hover {
+      background: lighten(#555, 10);
+    }
+  }
+}
