@@ -308,7 +308,7 @@ accordionView accordion =
 personalDetailsView : Details -> Model -> Pane -> Html Msg
 personalDetailsView details model currentPane =
     Html.form
-        [ class ("form-container" ++ togglePane PersonalDetails currentPane), onSubmit GoToLetter ]
+        [ class ("form-container personal-details" ++ togglePane PersonalDetails currentPane), onSubmit GoToLetter ]
         [ div [ class "form-item" ]
             [ label [ class "", for "firstName" ] [ text "First Name" ]
             , input [ type_ "text", id "firstName", name "firstName", placeholder "First Name", onInput (UpdateForm "firstName") ] []

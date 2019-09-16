@@ -3,8 +3,10 @@
 }
 .form-container {
   padding: 0 64px;
-  max-width: 700px;
   min-height: 70vmin;
+  &.personal-details {
+    max-width: 700px;
+  }
 
   &.hide {
     display: none;
