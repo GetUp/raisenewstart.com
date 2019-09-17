@@ -11,12 +11,9 @@ import Json.Encode as Encode
 
 type alias Model =
     { accordions : List Accordion
-    , firstName : String
-    , debtReason : String
     , currentPane : Pane
     , response : SubmitResponse
     , details : Details
-    , formFields : Dict String String
     , moduleSize : ModuleSize
     }
 
@@ -32,8 +29,10 @@ type alias Details =
     , phone : String
     , crn : String
     , debtReason : String
-
-    -- , personalCircumstancess : List String
+    , emailMP : Bool
+    , emailMinister : Bool
+    , submitFoi : Bool
+    , personalCircumstances : List String
     }
 
 
@@ -80,28 +79,32 @@ initialDetails =
     , phone = ""
     , crn = ""
     , debtReason = ""
+    , emailMP = True
+    , emailMinister = True
+    , submitFoi = True
+    , personalCircumstances = []
     }
 
 
 initialModel : Model
 initialModel =
     { accordions = initialAccordions
-    , firstName = ""
-    , debtReason = ""
     , currentPane = PersonalDetails
     , response = Nothing
     , details = initialDetails
-    , formFields = Dict.fromList [ ( "firstName", "" ) ]
     , moduleSize = Shrunk
     }
 
 
 encode : Model -> Encode.Value
 encode model =
-    Encode.object
-        [ ( "firstName", Encode.string model.firstName )
-        , ( "debtReason", Encode.string model.debtReason )
-        ]
+    Encode.object []
+
+
+
+-- [ ( "firstName", Encode.string model.firstName )
+-- , ( "debtReason", Encode.string model.debtReason )
+-- ]
 
 
 init : () -> ( Model, Cmd Msg )
@@ -121,14 +124,13 @@ main =
 
 type Msg
     = ClickedAccordion String
-    | SetName String String
+    | SetName String
     | SetdebtReason String
     | GoToLetter
     | GoToPersonalDetails
     | GoToPersonalCircumstances
     | SubmitForm
     | GotResponse (Result Http.Error String)
-    | UpdateForm String String
     | ToggleModuleSize ModuleSize
 
 
@@ -146,13 +148,13 @@ update msg model =
             in
             ( { model | accordions = newAccordions }, Cmd.none )
 
-        SetName field value ->
+        SetName name ->
             let
                 details =
                     model.details
 
                 newDetails =
-                    { model | details = { details | firstName = value } }
+                    { model | details = { details | firstName = name } }
 
                 _ =
                     Debug.log "Details " newDetails
@@ -160,7 +162,7 @@ update msg model =
             ( newDetails, Cmd.none )
 
         SetdebtReason debtReason ->
-            ( { model | debtReason = debtReason }, Cmd.none )
+            ( model, Cmd.none )
 
         GoToLetter ->
             ( { model | currentPane = Letter }, Cmd.none )
@@ -176,17 +178,6 @@ update msg model =
 
         GotResponse response ->
             ( { model | response = Res response }, Cmd.none )
-
-        UpdateForm key value ->
-            let
-                updatedFields =
-                    Dict.insert key value model.formFields
-
-                _ =
-                    -- Debug.log "Updated Fields " updatedFields
-                    Debug.log "Model " model.formFields
-            in
-            ( { model | formFields = updatedFields }, Cmd.none )
 
         ToggleModuleSize size ->
             let
@@ -253,31 +244,32 @@ showAlert res =
             "Error"
 
 
-moduleSize : ModuleSize -> String -> String
-moduleSize size m =
-    if m == "module" then
-        if size == Expanded then
+moduleSize : ( ModuleSize, String ) -> String
+moduleSize pair =
+    case pair of
+        ( Expanded, "module" ) ->
             " medium-8 large-8"
 
-        else
+        ( Shrunk, "module" ) ->
             " medium-6 large-4"
 
-    else if m == "module-opposite" then
-        if size == Expanded then
+        ( Expanded, "module-opposite" ) ->
             " medium-4 large-4"
 
-        else
+        ( Shrunk, "module-opposite" ) ->
             " medium-6 large-8"
 
-    else if m == "text" then
-        if size == Expanded then
-            "shink"
+        ( Expanded, "text" ) ->
+            "shrink"
 
-        else
+        ( Shrunk, "text" ) ->
             "expand"
 
-    else
-        ""
+        ( Expanded, _ ) ->
+            ""
+
+        ( Shrunk, _ ) ->
+            ""
 
 
 
@@ -311,11 +303,11 @@ personalDetailsView details model currentPane =
         [ class ("form-container personal-details" ++ togglePane PersonalDetails currentPane), onSubmit GoToLetter ]
         [ div [ class "form-item" ]
             [ label [ class "", for "firstName" ] [ text "First Name" ]
-            , input [ type_ "text", id "firstName", name "firstName", placeholder "First Name", onInput (UpdateForm "firstName") ] []
+            , input [ type_ "text", id "firstName", name "firstName", placeholder "First Name", value details.firstName, onInput SetName ] []
             ]
         , div [ class "form-item" ]
             [ label [ class "", for "lastName" ] [ text "Last Name" ]
-            , input [ type_ "text", id "lastName", name "lastName", placeholder "Last Name", onInput (UpdateForm "lastName") ] []
+            , input [ type_ "text", id "lastName", name "lastName", placeholder "Last Name" ] []
             ]
         , div [ class "form-item" ]
             [ label [ class "", for "email" ] [ text "Email" ]
@@ -423,7 +415,7 @@ view model =
     div []
         [ div [ class "grid-container fluid fraudstop" ]
             [ div [ class "grid-x grid-padding-x " ]
-                [ div [ class ("cell small-12 fraudstop-text" ++ moduleSize model.moduleSize "module-opposite") ]
+                [ div [ class ("cell small-12 fraudstop-text" ++ moduleSize ( model.moduleSize, "module-opposite" )) ]
                     [ div [ class "fraudstop-text-wrapper" ]
                         [ img [ src "/static/images/newstart-logo.svg", class "logo mb-3" ] []
                         , h1 [ class "headline mb-3" ]
@@ -434,10 +426,10 @@ view model =
                         , div [] <| List.map accordionView model.accordions
                         ]
                     ]
-                , div [ class ("cell small-12 fraudstop-form mb-5" ++ moduleSize model.moduleSize "module") ]
+                , div [ class ("cell small-12 fraudstop-form mb-5" ++ moduleSize ( model.moduleSize, "module" )) ]
                     [ div [ class "fraudstop-form-text--wrapper" ]
-                        [ div [ class ("expand-container " ++ moduleSize model.moduleSize "text"), onClick (ToggleModuleSize model.moduleSize) ]
-                            [ span [] [ text (moduleSize model.moduleSize "text") ]
+                        [ div [ class ("expand-container " ++ moduleSize ( model.moduleSize, "text" )), onClick (ToggleModuleSize model.moduleSize) ]
+                            [ span [] [ text (moduleSize ( model.moduleSize, "text" )) ]
                             , img [ src "/static/images/expand-icon.svg" ] []
                             ]
                         , h2 [ class "h6 title" ] [ text "This is a title" ]
