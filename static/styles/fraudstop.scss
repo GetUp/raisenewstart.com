@@ -4,11 +4,13 @@
 .form-container {
   padding: 0 64px;
   min-height: 70vmin;
+
   &.personal-details {
     max-width: 700px;
   }
 
-  &.hide {
+  &.hide,
+  .hide {
     display: none;
   }
   .two-column {
@@ -125,7 +127,13 @@
         width: 100%;
         text-align: center;
         color: $gray-600;
+        text-decoration: underline;
         cursor: pointer;
+        &.disable {
+          text-decoration: none;
+          pointer-events: none;
+          opacity: 0.7;
+        }
         &.active {
           color: $ns-orange-500;
           border-top: 4px solid $ns-orange-500;
@@ -187,10 +195,16 @@
     opacity: 0.8;
     text-decoration: underline;
   }
-  &.expand {
+  &.expanded {
+    .shrunk-text {
+      display: none;
+    }
     img {
       transform: rotate(0deg);
     }
+  }
+  &.shrunk .expanded-text {
+    display: none;
   }
 }
 
@@ -211,8 +225,5 @@
     @include rounded;
   }
   .radio-buttons {
-    input {
-      // margin
-    }
   }
 }

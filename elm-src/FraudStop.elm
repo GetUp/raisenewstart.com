@@ -32,7 +32,19 @@ type alias Details =
     , emailMP : Bool
     , emailMinister : Bool
     , submitFoi : Bool
-    , personalCircumstances : List String
+    , receiveUpdates : Bool
+    , classAction : Bool
+    , hasPersonalCircumstances : Bool
+    , personalCircumstances : Circumstances
+    }
+
+
+type alias Circumstances =
+    { illness : Bool
+    , financialHardship : Bool
+    , addiction : Bool
+    , homelessness : Bool
+    , other : String
     }
 
 
@@ -47,6 +59,7 @@ type Pane
     = PersonalDetails
     | Letter
     | PersonalCircumstances
+    | FinalStep
 
 
 type ModuleSize
@@ -56,6 +69,7 @@ type ModuleSize
 
 type SubmitResponse
     = Res (Result Http.Error String)
+    | Loading
     | Nothing
 
 
@@ -82,14 +96,27 @@ initialDetails =
     , emailMP = True
     , emailMinister = True
     , submitFoi = True
-    , personalCircumstances = []
+    , receiveUpdates = False
+    , classAction = False
+    , hasPersonalCircumstances = False
+    , personalCircumstances = initialCircumstances
+    }
+
+
+initialCircumstances : Circumstances
+initialCircumstances =
+    { illness = False
+    , financialHardship = False
+    , addiction = False
+    , homelessness = False
+    , other = ""
     }
 
 
 initialModel : Model
 initialModel =
     { accordions = initialAccordions
-    , currentPane = PersonalDetails
+    , currentPane = FinalStep
     , response = Nothing
     , details = initialDetails
     , moduleSize = Shrunk
@@ -98,13 +125,33 @@ initialModel =
 
 encode : Model -> Encode.Value
 encode model =
-    Encode.object []
+    Encode.object
+        [ ( "firstName", Encode.string model.details.firstName )
+        , ( "lastName", Encode.string model.details.lastName )
+        , ( "email", Encode.string model.details.email )
+        , ( "address", Encode.string model.details.address )
+        , ( "suburb", Encode.string model.details.suburb )
+        , ( "postcode", Encode.string model.details.postcode )
+        , ( "dob", Encode.string model.details.dob )
+        , ( "phone", Encode.string model.details.phone )
+        , ( "crn", Encode.string model.details.crn )
+        , ( "debtReason", Encode.string model.details.debtReason )
+        , ( "emailMP", Encode.bool model.details.emailMP )
+        , ( "emailMinister", Encode.bool model.details.emailMinister )
+        , ( "submitFoi", Encode.bool model.details.submitFoi )
+        , ( "personalCircumstances", encodePersonalCircumstances model.details.personalCircumstances )
+        ]
 
 
-
--- [ ( "firstName", Encode.string model.firstName )
--- , ( "debtReason", Encode.string model.debtReason )
--- ]
+encodePersonalCircumstances : Circumstances -> Encode.Value
+encodePersonalCircumstances circumstances =
+    Encode.object
+        [ ( "illness", Encode.bool circumstances.illness )
+        , ( "financialHardship", Encode.bool circumstances.financialHardship )
+        , ( "addiction", Encode.bool circumstances.addiction )
+        , ( "homelessness", Encode.bool circumstances.homelessness )
+        , ( "other", Encode.string circumstances.other )
+        ]
 
 
 init : () -> ( Model, Cmd Msg )
@@ -124,11 +171,31 @@ main =
 
 type Msg
     = ClickedAccordion String
-    | SetName String
+    | SetFirstName String
+    | SetLastName String
+    | SetEmail String
+    | SetAddress String
+    | SetSuburb String
+    | SetPostcode String
+    | SetDob String
+    | SetPhone String
+    | SetCRN String
     | SetdebtReason String
+    | SetEmailMP
+    | SetEmailMinister
+    | SetSubmitFoi
+    | SetReceiveUpdates
+    | SetClassAction
+    | SetHasPersonalCircumstances
+    | SetIllness
+    | SetFinancialHardship
+    | SetAddiction
+    | SetHomelessness
+    | SetOtherReason String
     | GoToLetter
     | GoToPersonalDetails
     | GoToPersonalCircumstances
+    | GoToFinalStep
     | SubmitForm
     | GotResponse (Result Http.Error String)
     | ToggleModuleSize ModuleSize
@@ -148,21 +215,255 @@ update msg model =
             in
             ( { model | accordions = newAccordions }, Cmd.none )
 
-        SetName name ->
+        SetFirstName firstName ->
             let
                 details =
                     model.details
 
                 newDetails =
-                    { model | details = { details | firstName = name } }
+                    { model | details = { details | firstName = firstName } }
+            in
+            ( newDetails, Cmd.none )
 
-                _ =
-                    Debug.log "Details " newDetails
+        SetLastName lastName ->
+            let
+                details =
+                    model.details
+
+                newDetails =
+                    { model | details = { details | lastName = lastName } }
+            in
+            ( newDetails, Cmd.none )
+
+        SetEmail email ->
+            let
+                details =
+                    model.details
+
+                newDetails =
+                    { model | details = { details | email = email } }
+            in
+            ( newDetails, Cmd.none )
+
+        SetAddress address ->
+            let
+                details =
+                    model.details
+
+                newDetails =
+                    { model | details = { details | address = address } }
+            in
+            ( newDetails, Cmd.none )
+
+        SetSuburb suburb ->
+            let
+                details =
+                    model.details
+
+                newDetails =
+                    { model | details = { details | suburb = suburb } }
+            in
+            ( newDetails, Cmd.none )
+
+        SetPostcode postcode ->
+            let
+                details =
+                    model.details
+
+                newDetails =
+                    { model | details = { details | postcode = postcode } }
+            in
+            ( newDetails, Cmd.none )
+
+        SetDob dob ->
+            let
+                details =
+                    model.details
+
+                newDetails =
+                    { model | details = { details | dob = dob } }
+            in
+            ( newDetails, Cmd.none )
+
+        SetPhone phone ->
+            let
+                details =
+                    model.details
+
+                newDetails =
+                    { model | details = { details | phone = phone } }
+            in
+            ( newDetails, Cmd.none )
+
+        SetCRN crn ->
+            let
+                details =
+                    model.details
+
+                newDetails =
+                    { model | details = { details | crn = crn } }
             in
             ( newDetails, Cmd.none )
 
         SetdebtReason debtReason ->
-            ( model, Cmd.none )
+            let
+                details =
+                    model.details
+
+                newDetails =
+                    { model | details = { details | debtReason = debtReason } }
+            in
+            ( newDetails, Cmd.none )
+
+        SetEmailMP ->
+            let
+                details =
+                    model.details
+
+                newDetails =
+                    { model | details = { details | emailMP = not details.emailMP } }
+            in
+            ( newDetails, Cmd.none )
+
+        SetEmailMinister ->
+            let
+                details =
+                    model.details
+
+                newDetails =
+                    { model | details = { details | emailMinister = not details.emailMinister } }
+            in
+            ( newDetails, Cmd.none )
+
+        SetSubmitFoi ->
+            let
+                details =
+                    model.details
+
+                newDetails =
+                    { model | details = { details | submitFoi = not details.submitFoi } }
+            in
+            ( newDetails, Cmd.none )
+
+        SetReceiveUpdates ->
+            let
+                details =
+                    model.details
+
+                newDetails =
+                    { model | details = { details | receiveUpdates = not details.receiveUpdates } }
+            in
+            ( newDetails, Cmd.none )
+
+        SetClassAction ->
+            let
+                details =
+                    model.details
+
+                newDetails =
+                    { model | details = { details | classAction = not details.classAction } }
+            in
+            ( newDetails, Cmd.none )
+
+        SetHasPersonalCircumstances ->
+            let
+                details =
+                    model.details
+
+                newDetails =
+                    { model | details = { details | hasPersonalCircumstances = details.hasPersonalCircumstances } }
+            in
+            ( newDetails, Cmd.none )
+
+        SetIllness ->
+            let
+                details =
+                    model.details
+
+                circumstances =
+                    details.personalCircumstances
+
+                newDetails =
+                    { model
+                        | details =
+                            { details
+                                | personalCircumstances = { circumstances | illness = not circumstances.illness }
+                            }
+                    }
+            in
+            ( newDetails, Cmd.none )
+
+        SetFinancialHardship ->
+            let
+                details =
+                    model.details
+
+                circumstances =
+                    details.personalCircumstances
+
+                newDetails =
+                    { model
+                        | details =
+                            { details
+                                | personalCircumstances = { circumstances | financialHardship = not circumstances.financialHardship }
+                            }
+                    }
+            in
+            ( newDetails, Cmd.none )
+
+        SetAddiction ->
+            let
+                details =
+                    model.details
+
+                circumstances =
+                    details.personalCircumstances
+
+                newDetails =
+                    { model
+                        | details =
+                            { details
+                                | personalCircumstances = { circumstances | addiction = not circumstances.addiction }
+                            }
+                    }
+            in
+            ( newDetails, Cmd.none )
+
+        SetHomelessness ->
+            let
+                details =
+                    model.details
+
+                circumstances =
+                    details.personalCircumstances
+
+                newDetails =
+                    { model
+                        | details =
+                            { details
+                                | personalCircumstances = { circumstances | homelessness = not circumstances.homelessness }
+                            }
+                    }
+            in
+            ( newDetails, Cmd.none )
+
+        SetOtherReason other ->
+            let
+                details =
+                    model.details
+
+                circumstances =
+                    details.personalCircumstances
+
+                newDetails =
+                    { model
+                        | details =
+                            { details
+                                | personalCircumstances = { circumstances | other = other }
+                            }
+                    }
+            in
+            ( newDetails, Cmd.none )
 
         GoToLetter ->
             ( { model | currentPane = Letter }, Cmd.none )
@@ -173,8 +474,11 @@ update msg model =
         GoToPersonalCircumstances ->
             ( { model | currentPane = PersonalCircumstances }, Cmd.none )
 
+        GoToFinalStep ->
+            ( { model | currentPane = FinalStep }, Cmd.none )
+
         SubmitForm ->
-            ( model, submitForm model )
+            ( { model | response = Loading }, submitForm model )
 
         GotResponse response ->
             ( { model | response = Res response }, Cmd.none )
@@ -198,7 +502,7 @@ submitForm model =
             Debug.log "Submit " model
     in
     Http.post
-        { url = "http://debt-star-staging.herokuapp.com/dothething"
+        { url = "https://t1o3wcwixf.execute-api.us-east-1.amazonaws.com/dev/begin"
         , body = Http.jsonBody (encode model)
         , expect = Http.expectString GotResponse
         }
@@ -211,65 +515,6 @@ toggleAccordion header accordion =
 
     else
         accordion
-
-
-togglePane : Pane -> Pane -> String
-togglePane pane currentPane =
-    if pane == currentPane then
-        ""
-
-    else
-        " hide"
-
-
-isActivePane : Pane -> Pane -> String
-isActivePane pane currentPane =
-    if pane == currentPane then
-        " active"
-
-    else
-        ""
-
-
-showAlert : SubmitResponse -> String
-showAlert res =
-    case res of
-        Nothing ->
-            ""
-
-        Res (Ok _) ->
-            "Success"
-
-        Res (Err _) ->
-            "Error"
-
-
-moduleSize : ( ModuleSize, String ) -> String
-moduleSize pair =
-    case pair of
-        ( Expanded, "module" ) ->
-            " medium-8 large-8"
-
-        ( Shrunk, "module" ) ->
-            " medium-6 large-4"
-
-        ( Expanded, "module-opposite" ) ->
-            " medium-4 large-4"
-
-        ( Shrunk, "module-opposite" ) ->
-            " medium-6 large-8"
-
-        ( Expanded, "text" ) ->
-            "shrink"
-
-        ( Shrunk, "text" ) ->
-            "expand"
-
-        ( Expanded, _ ) ->
-            ""
-
-        ( Shrunk, _ ) ->
-            ""
 
 
 
@@ -297,45 +542,90 @@ accordionView accordion =
         ]
 
 
+multistepsView : Pane -> Html Msg
+multistepsView currentPane =
+    div [ class "steps-container" ]
+        [ div
+            [ class "step"
+            , classList
+                [ ( "active", currentPane == PersonalDetails )
+                ]
+            , onClick GoToPersonalDetails
+            ]
+            [ text "About you" ]
+        , a
+            [ class "step"
+            , classList
+                [ ( "active", currentPane == Letter )
+                , ( "disable", currentPane == PersonalDetails )
+                ]
+            , onClick GoToLetter
+            , disabled True
+            ]
+            [ text "Your story" ]
+        , div
+            [ class "step"
+            , classList
+                [ ( "active", currentPane == PersonalCircumstances )
+                , ( "disable", currentPane == PersonalDetails || currentPane == Letter )
+                ]
+            , onClick GoToPersonalCircumstances
+            ]
+            [ text "Other details" ]
+        , div
+            [ class "step"
+            , classList
+                [ ( "active", currentPane == FinalStep )
+                , ( "disable", currentPane == PersonalDetails || currentPane == Letter )
+                ]
+            , onClick GoToFinalStep
+            ]
+            [ text "Final Step" ]
+        ]
+
+
 personalDetailsView : Details -> Model -> Pane -> Html Msg
 personalDetailsView details model currentPane =
     Html.form
-        [ class ("form-container personal-details" ++ togglePane PersonalDetails currentPane), onSubmit GoToLetter ]
+        [ class "form-container personal-details"
+        , classList [ ( "hide", not (currentPane == PersonalDetails) ) ]
+        , onSubmit GoToLetter
+        ]
         [ div [ class "form-item" ]
             [ label [ class "", for "firstName" ] [ text "First Name" ]
-            , input [ type_ "text", id "firstName", name "firstName", placeholder "First Name", value details.firstName, onInput SetName ] []
+            , input [ type_ "text", id "firstName", name "firstName", placeholder "First Name", value details.firstName, onInput SetFirstName ] []
             ]
         , div [ class "form-item" ]
             [ label [ class "", for "lastName" ] [ text "Last Name" ]
-            , input [ type_ "text", id "lastName", name "lastName", placeholder "Last Name" ] []
+            , input [ type_ "text", id "lastName", name "lastName", placeholder "Last Name", value details.lastName, onInput SetLastName ] []
             ]
         , div [ class "form-item" ]
             [ label [ class "", for "email" ] [ text "Email" ]
-            , input [ type_ "email", id "email", name "email", placeholder "Email", value details.email ] []
+            , input [ type_ "email", id "email", name "email", placeholder "Email", value details.email, value details.email, onInput SetEmail ] []
             ]
         , div [ class "form-item" ]
             [ label [ class "", for "address" ] [ text "Address" ]
-            , input [ type_ "text", id "address", name "address", placeholder "Address", value details.address ] []
+            , input [ type_ "text", id "address", name "address", placeholder "Address", value details.address, value details.address, onInput SetAddress ] []
             ]
         , div [ class "form-item" ]
             [ label [ class "", for "suburb" ] [ text "Suburb" ]
-            , input [ type_ "text", id "suburb", name "suburb", placeholder "Suburb", value details.suburb ] []
+            , input [ type_ "text", id "suburb", name "suburb", placeholder "Suburb", value details.suburb, value details.suburb, onInput SetSuburb ] []
             ]
         , div [ class "form-item" ]
             [ label [ class "", for "postcode" ] [ text "Post Code" ]
-            , input [ type_ "text", id "postcode", name "postcode", placeholder "Post Code", value details.postcode, pattern "^[0-9]{4}$", title "Your postcode should be 4 digits" ] []
+            , input [ type_ "text", id "postcode", name "postcode", placeholder "Post Code", value details.postcode, pattern "^[0-9]{4}$", title "Your postcode should be 4 digits", value details.postcode, onInput SetPostcode ] []
             ]
         , div [ class "form-item" ]
             [ label [ class "", for "dob" ] [ text "Date of Birth" ]
-            , input [ type_ "date", id "dob", name "dob", placeholder "dd/mm/yyyy", value details.dob ] []
+            , input [ type_ "date", id "dob", name "dob", placeholder "dd/mm/yyyy", value details.dob, value details.dob, onInput SetDob ] []
             ]
         , div [ class "form-item" ]
             [ label [ class "", for "Phone" ] [ text "Phone" ]
-            , input [ type_ "text", id "Phone", name "Phone", placeholder "Phone", value details.phone, pattern "^[0-9]{10,16}$" ] []
+            , input [ type_ "text", id "Phone", name "Phone", placeholder "Phone", value details.phone, pattern "^[0-9]{10,16}$", value details.phone, onInput SetPhone ] []
             ]
         , div [ class "form-item" ]
             [ label [ class "", for "crn" ] [ text "Centrelink Reference Number (CRN)" ]
-            , input [ type_ "text", id "crn", name "crn", placeholder "123456789A", value details.crn, pattern "^[0-9]{9}[a-zA-Z]{1}$", title "Your Centrelink CRN should be 9 digits followed by 1 letter" ] []
+            , input [ type_ "text", id "crn", name "crn", placeholder "123456789A", value details.crn, pattern "^[0-9]{9}[a-zA-Z]{1}$", title "Your Centrelink CRN should be 9 digits followed by 1 letter", value details.crn, onInput SetCRN ] []
             ]
         , button [ type_ "submit", class "btn btn-primary mt-4" ] [ text "Next" ]
         ]
@@ -343,7 +633,11 @@ personalDetailsView details model currentPane =
 
 letterView : Details -> Pane -> Html Msg
 letterView details currentPane =
-    div [ class ("form-container" ++ togglePane Letter currentPane) ]
+    div
+        [ class "form-container"
+        , classList [ ( "hide", not (currentPane == Letter) ) ]
+        , onSubmit GoToLetter
+        ]
         [ div [ class "alert-container" ]
             [ p [ class "" ]
                 [ text "A sample of the letter. Your reasons will be added to the letter that is sent directly to Centrelink. If you've made a mistake while entering your details, press back to edit it."
@@ -351,12 +645,12 @@ letterView details currentPane =
             ]
         , div [ class "letter-container" ]
             [ p [] [ text "I am writing to request a review by an Authorised Review Officer. My personal details, the decision I am appealing against, and my reasons for appealing are set out below." ]
-            , p [ class "mb-0" ] [ text ("Name: " ++ details.firstName) ]
-            , p [ class "mb-0" ] [ text "Date of birth: " ]
-            , p [ class "mb-0" ] [ text "Address: " ]
-            , p [ class "mb-0" ] [ text "CRN: " ]
-            , p [ class "mb-0" ] [ text "Telephone: " ]
-            , p [] [ text "Email: " ]
+            , p [ class "mb-0" ] [ text ("Name: " ++ details.firstName ++ " " ++ details.lastName) ]
+            , p [ class "mb-0" ] [ text ("Date of birth: " ++ details.dob) ]
+            , p [ class "mb-0" ] [ text ("Address: " ++ details.address) ]
+            , p [ class "mb-0" ] [ text ("CRN: " ++ details.crn) ]
+            , p [ class "mb-0" ] [ text ("Telephone: " ++ details.phone) ]
+            , p [] [ text ("Email: " ++ details.email) ]
             , p [] [ text "I am appealing the decision to subject me to an automatically generated compliance intervention process." ]
             , p [] [ b [] [ text "My reasons for appealing are:" ] ]
             , textarea
@@ -364,8 +658,7 @@ letterView details currentPane =
                 , class "debt-reason"
                 , name "debtReason"
                 , placeholder "Explain to Centrelink in a few sentences why you feel the letter you received is incorrect. Please keep it short and aim to stick to the facts as much as possible."
-
-                -- , value details.debtReason
+                , value details.debtReason
                 , onInput SetdebtReason
                 ]
                 []
@@ -377,37 +670,159 @@ letterView details currentPane =
 
 personalCircumstancesView : Details -> Pane -> Html Msg
 personalCircumstancesView details currentPane =
-    div [ class ("form-container personal-circumstances-container" ++ togglePane PersonalCircumstances currentPane) ]
+    div
+        [ class "form-container personal-circumstances-container"
+        , classList [ ( "hide", not (currentPane == PersonalCircumstances) ) ]
+        , onSubmit GoToLetter
+        ]
         [ label [ class "mb-3" ] [ text "Do you have any specific personal circumstances which may have impacted your ability to report income or caused you significant hardship?" ]
         , div [ class "radio-buttons" ]
-            [ input [ class "mr-2", type_ "radio", name "impacted_ability_to_report_income", value "Yes" ] []
-            , span [ class "mr-3" ] [ text "Yes" ]
-            , input [ class "mr-2", type_ "radio", name "impacted_ability_to_report_income", value "No" ] []
-            , span [] [ text "No" ]
+            [ input [ class "mr-2", type_ "radio", id "impacted_ability_to_report_income_yes", value "Yes", onClick SetHasPersonalCircumstances, checked details.hasPersonalCircumstances ] []
+            , label [ for "impacted_ability_to_report_income_yes", class "mr-3" ] [ text "Yes" ]
+            , input [ class "mr-2", type_ "radio", id "impacted_ability_to_report_income_no", value "No", onClick SetHasPersonalCircumstances, checked (not details.hasPersonalCircumstances) ] []
+            , label [ for "impacted_ability_to_report_income_no" ] [ text "No" ]
             ]
         , br [] []
         , br [] []
-        , label [ class "mb-3" ] [ text "Which specific personal circumstances apply to your case? (choose all those that apply)" ]
-        , div [ class "radio-buttons" ]
-            [ input [ id "illness", class "mr-2 mb-3", type_ "checkbox", value "Illness (including mental illness)" ] []
-            , label [ for "illness", class "mr-3" ] [ text "Illness (including mental illness)" ]
-            , br [] []
-            , input [ id "financial-hardship", class "mr-2 mb-3", type_ "checkbox", value "Financial hardship" ] []
-            , label [ for "financial-hardship", class "mr-3" ] [ text "Financial hardship" ]
-            , br [] []
-            , input [ id "addiction", class "mr-2 mb-3", type_ "checkbox", value "Addiction" ] []
-            , label [ for "addicition", class "mr-3" ] [ text "Addiction" ]
-            , br [] []
-            , input [ id "homelessness", class "mr-2 mb-3", type_ "checkbox", value "Homelessness" ] []
-            , label [ for "homelessness", class "mr-3" ] [ text "Homelessness" ]
-            , br [] []
-            , input [ id "other", class "mr-2 mb-3", type_ "checkbox", value "Other" ] []
-            , label [ for "other", class "mr-3" ] [ text "Other" ]
-            , br [] []
-            , input [ class "mr-2 mb-3 mt-2 other-inputbox", type_ "text", placeholder "Other circumstance" ] []
+        , div
+            [ classList [ ( "hide", not details.hasPersonalCircumstances ) ] ]
+            [ label [ class "mb-3" ] [ text "Which specific personal circumstances apply to your case? (choose all those that apply)" ]
+            , div
+                [ class "radio-buttons" ]
+                [ input [ id "illness", class "mr-2 mb-3", type_ "checkbox", value "Illness (including mental illness)", onClick SetIllness, checked details.personalCircumstances.illness ] []
+                , label [ for "illness", class "mr-3" ] [ text "Illness (including mental illness)" ]
+                , br [] []
+                , input [ id "financial-hardship", class "mr-2 mb-3", type_ "checkbox", value "Financial hardship", onClick SetFinancialHardship, checked details.personalCircumstances.financialHardship ] []
+                , label [ for "financial-hardship", class "mr-3" ] [ text "Financial hardship" ]
+                , br [] []
+                , input [ id "addiction", class "mr-2 mb-3", type_ "checkbox", value "Addiction", onClick SetAddiction, checked details.personalCircumstances.addiction ] []
+                , label [ for "addiction", class "mr-3" ] [ text "Addiction" ]
+                , br [] []
+                , input [ id "homelessness", class "mr-2 mb-3", type_ "checkbox", value "Homelessness", onClick SetHomelessness, checked details.personalCircumstances.homelessness ] []
+                , label [ for "homelessness", class "mr-3" ] [ text "Homelessness" ]
+                , br [] []
+                , input [ class "mr-2 mb-3 mt-2 other-inputbox", type_ "text", placeholder "Other circumstances (if any)", onInput SetOtherReason ] []
+                ]
             ]
-        , a [ class "btn btn-primary mt-5" ] [ text "Submit" ]
+        , a [ class "btn btn-outline btn-primary mt-5 mr-2", onClick GoToLetter ] [ text "Back" ]
+        , a [ class "btn btn-primary mt-5", onClick GoToFinalStep ] [ text "Next" ]
         ]
+
+
+finalStepView : Details -> Pane -> Html Msg
+finalStepView details currentPane =
+    div
+        [ class "form-container personal-circumstances-container"
+        , classList [ ( "hide", not (currentPane == FinalStep) ) ]
+        , onSubmit GoToLetter
+        ]
+        [ p [ class "h3" ] [ b [] [ text "Do you want to take this further?" ] ]
+        , p [] [ text "Before we submit your review to Centrelink, you can choose to also do as many of the following actions as you like to make even more noise and increase your chances of a favourable outcome." ]
+        , div [ class "alert-container" ]
+            [ p [] [ text "Please note that to do this we have to pass on some of your personal details, including your name, address, email and phone number." ]
+            ]
+        , div
+            []
+            [ input
+                [ id "email_local_member"
+                , class "mr-2"
+                , type_ "checkbox"
+                , value "Email my local Member of Parliament asking for assistance with my case."
+                , onClick SetEmailMP
+                , checked details.emailMP
+                ]
+                []
+            , label [ for "email_local_member", class "mr-3" ] [ text "Email my local Member of Parliament asking for assistance with my case." ]
+            , br [] []
+            , br [] []
+            , input
+                [ id "email_minister"
+                , class "mr-2"
+                , type_ "checkbox"
+                , value "Email Christian Porter MP, the Minister in charge of Centrelink, calling on him to stop the automatic debt-threat letters immediately."
+                , onClick SetEmailMinister
+                , checked details.emailMinister
+                ]
+                []
+            , label [ for "email_minister", class "mr-3 mb-3" ] [ text "Email Christian Porter MP, the Minister in charge of Centrelink, calling on him to stop the automatic debt-threat letters immediately." ]
+            , br [] []
+            , br [] []
+            , input
+                [ id "submit_foi"
+                , class "mr-2"
+                , type_ "checkbox"
+                , value "Submit a Freedom of Information request asking for my current Centrelink file and the information used to calculate the debt Centrelink claims I owe."
+                , onClick SetSubmitFoi
+                , checked details.submitFoi
+                ]
+                []
+            , label [ for "submit_foi", class "mr-3" ] [ text "Submit a Freedom of Information request asking for my current Centrelink file and the information used to calculate the debt Centrelink claims I owe." ]
+            , br [] []
+            , hr [] []
+            , input [ id "receive_updates", class "mr-2", type_ "checkbox", value "Receive updates", onClick SetReceiveUpdates, checked details.receiveUpdates ] []
+            , label [ for "receive_updates", class "mr-3" ] [ text "Receive updates" ]
+            , br [] []
+            , br [] []
+            , input [ id "participate_class_action", class "mr-2", type_ "checkbox", value "Would you be interested in participating in a potential class action lawsuit against the automated debt letters?", onClick SetClassAction, checked details.classAction ] []
+            , label [ for "participate_class_action", class "mr-3" ] [ text "Would you be interested in participating in a potential class action lawsuit against the automated debt letters?" ]
+            ]
+        , a [ class "btn btn-outline btn-primary mt-5 mr-2", onClick GoToPersonalCircumstances ] [ text "Back" ]
+        , a [ class "btn btn-primary mt-5", onClick SubmitForm ] [ text "Submit" ]
+        ]
+
+
+moduleView : Model -> Html Msg
+moduleView model =
+    div []
+        [ multistepsView model.currentPane
+        , personalDetailsView model.details model model.currentPane
+        , letterView model.details model.currentPane
+        , personalCircumstancesView model.details model.currentPane
+        , finalStepView model.details model.currentPane
+        ]
+
+
+errorSubmitView : Html Msg
+errorSubmitView =
+    div [ class "form-container mt-5" ] [ text "error" ]
+
+
+loadingSubmitView : Html Msg
+loadingSubmitView =
+    div [ class "form-container mt-5" ]
+        [ p [] [ text "loading indicator" ]
+        ]
+
+
+successSubmitView : Html Msg
+successSubmitView =
+    div [ class "form-container success-container mt-5" ]
+        [ h2 [ class "success-title h4" ] [ text "Success! We've put your appeal letter together and posted it to Centrelink. " ]
+        , div [ class "alert-container" ]
+            [ p [] [ text "You should receive an email from us (GetUp!) confirming that all documents have been correctly compiled and submitted. If you do not receive this email within 24 hours, please contact us (email info@getup.org.au) immediately as it means your request for a review may not have been correctly submitted." ]
+            ]
+        , p [] [ b [] [ text "What happens from here?" ] ]
+
+        , ul [] [
+            li [] [ text "If you haven't heard from Centrelink three weeks after submitting your review on this website, call Centrelink or go to an office in person to make sure they have received your appeal. Ask for a receipt number, which you should then use for all future communication with them. If they haven't received your appeal after three weeks, it is important you get in touch with Legal Aid and get further advice."]
+        ]
+        ]
+
+
+showModule : SubmitResponse -> Model -> Html Msg
+showModule req model =
+    case req of
+        Nothing ->
+            moduleView model
+
+        Res (Ok _) ->
+            successSubmitView
+
+        Loading ->
+            loadingSubmitView
+
+        Res (Err _) ->
+            errorSubmitView
 
 
 view : Model -> Html Msg
@@ -415,7 +830,13 @@ view model =
     div []
         [ div [ class "grid-container fluid fraudstop" ]
             [ div [ class "grid-x grid-padding-x " ]
-                [ div [ class ("cell small-12 fraudstop-text" ++ moduleSize ( model.moduleSize, "module-opposite" )) ]
+                [ div
+                    [ class "cell small-12 fraudstop-text"
+                    , classList
+                        [ ( "medium-4 large-4", model.moduleSize == Expanded )
+                        , ( "medium-6 large-8", model.moduleSize == Shrunk )
+                        ]
+                    ]
                     [ div [ class "fraudstop-text-wrapper" ]
                         [ img [ src "/static/images/newstart-logo.svg", class "logo mb-3" ] []
                         , h1 [ class "headline mb-3" ]
@@ -426,23 +847,32 @@ view model =
                         , div [] <| List.map accordionView model.accordions
                         ]
                     ]
-                , div [ class ("cell small-12 fraudstop-form mb-5" ++ moduleSize ( model.moduleSize, "module" )) ]
+                , div
+                    [ class "cell small-12 fraudstop-form mb-5"
+                    , classList
+                        [ ( "medium-8 large-8", model.moduleSize == Expanded )
+                        , ( "medium-6 large-4", model.moduleSize == Shrunk )
+                        ]
+                    ]
                     [ div [ class "fraudstop-form-text--wrapper" ]
-                        [ div [ class ("expand-container " ++ moduleSize ( model.moduleSize, "text" )), onClick (ToggleModuleSize model.moduleSize) ]
-                            [ span [] [ text (moduleSize ( model.moduleSize, "text" )) ]
+                        [ div
+                            [ class "expand-container"
+                            , classList
+                                [ ( "shrunk", model.moduleSize == Expanded )
+                                , ( "expanded", model.moduleSize == Shrunk )
+                                ]
+                            , onClick (ToggleModuleSize model.moduleSize)
+                            ]
+                            [ span [ class "shrunk-text" ] [ text "Shrink" ]
+                            , span [ class "expanded-text" ] [ text "Expand" ]
                             , img [ src "/static/images/expand-icon.svg" ] []
                             ]
                         , h2 [ class "h6 title" ] [ text "This is a title" ]
                         , p [] [ text "FraudStop makes it quick and easy to appeal an automated debt claim against you. All you need to do is enter a few details, explain why you want to appeal the debt claim against you, and hit send - FraudStop does the rest." ]
                         ]
-                    , div [ class "steps-container" ]
-                        [ div [ class ("step" ++ isActivePane PersonalDetails model.currentPane), onClick GoToPersonalDetails ] [ text "About you" ]
-                        , div [ class ("step" ++ isActivePane Letter model.currentPane), onClick GoToLetter ] [ text "Your story" ]
-                        , div [ class ("step" ++ isActivePane PersonalCircumstances model.currentPane), onClick GoToPersonalCircumstances ] [ text "Other details" ]
-                        ]
-                    , personalDetailsView model.details model model.currentPane
-                    , letterView model.details model.currentPane
-                    , personalCircumstancesView model.details model.currentPane
+                    , showModule model.response model
+
+                    -- , showModule (Res (Ok "")) model
                     ]
                 ]
             ]

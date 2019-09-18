@@ -62,7 +62,7 @@ const LogoAnimation = ({ className }) => {
     }
 
     const master = new TimelineMax({ repeat: -1 })
-    master.timeScale(1.3)
+    master.timeScale(1.1)
     // master.add(animateCentrelink())
     // master.add(animateHeart(), '-=3')
     master.add(animateHeart())
