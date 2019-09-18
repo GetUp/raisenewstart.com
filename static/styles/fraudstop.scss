@@ -82,8 +82,11 @@
     // height: 100vh;
     background: $gray-900;
     color: white;
-    padding: 64px !important;
     // overflow: scroll;
+    padding: 32px 16px !important;
+    @media screen and (min-width: 600px) {
+      padding: 64px !important;
+    }
 
     &-wrapper {
       .logo {
@@ -98,8 +101,13 @@
     // overflow: scroll;
     &-text--wrapper {
       background: $ns-green-700;
-      border-bottom: 2px solid $gray-300;
-      padding: 32px;
+      padding: 32px 16px;
+
+      border-bottom: 0px solid $gray-300;
+      @media screen and (min-width: 600px) {
+        border-bottom: 2px solid $gray-300;
+        padding: 32px;
+      }
       h2 {
         color: $ns-green-700;
         font-weight: bold;
@@ -120,23 +128,47 @@
       font-weight: bold;
       font-size: 0.85em;
       margin-bottom: 32px;
+
       .step {
         padding: 8px;
+        padding-bottom: 12px;
         border-top: 4px solid rgba(white, 0);
         transform: translateY(-3px);
         width: 100%;
         text-align: center;
-        color: $gray-600;
-        text-decoration: underline;
+        color: $ns-green-700;
+        background: rgba($ns-green-700, 0.1);
         cursor: pointer;
         &.disable {
-          text-decoration: none;
+          background: none;
+          color: $gray-500;
           pointer-events: none;
-          opacity: 0.7;
         }
         &.active {
+          background: rgba($ns-orange-500, 0.1);
           color: $ns-orange-500;
           border-top: 4px solid $ns-orange-500;
+        }
+      }
+
+      @media screen and (max-width: 600px) {
+        position: sticky;
+        top: 0;
+        background: white;
+        box-shadow: 1px 2px 4px 0px $gray-200;
+        transform: translateY(0px);
+        .step {
+          text-decoration: none;
+          transform: translateY(0px);
+          // border-top: 0px;
+          // border-bottom: 4px solid rgba(white, 0);
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          font-size: 0.9em;
+          height: 50px;
+          &.active {
+          }
         }
       }
     }

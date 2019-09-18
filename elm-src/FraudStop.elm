@@ -575,7 +575,7 @@ multistepsView currentPane =
             , onClick GoToPersonalDetails
             ]
             [ text "About you" ]
-        , a
+        , div
             [ class "step"
             , classList
                 [ ( "active", currentPane == Letter )
@@ -598,7 +598,7 @@ multistepsView currentPane =
             [ class "step"
             , classList
                 [ ( "active", currentPane == FinalStep )
-                , ( "disable", currentPane == PersonalDetails || currentPane == Letter )
+                , ( "disable", currentPane /= FinalStep )
                 ]
             , onClick GoToFinalStep
             ]
