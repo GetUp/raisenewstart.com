@@ -83,21 +83,39 @@ initialAccordions =
 
 initialDetails : Details
 initialDetails =
-    { firstName = ""
-    , lastName = ""
-    , email = ""
-    , address = ""
-    , suburb = ""
-    , postcode = ""
-    , dob = ""
-    , phone = ""
-    , crn = ""
-    , debtReason = ""
+    -- { firstName = ""
+    -- , lastName = ""
+    -- , email = ""
+    -- , address = ""
+    -- , suburb = ""
+    -- , postcode = ""
+    -- , dob = ""
+    -- , phone = ""
+    -- , crn = ""
+    -- , debtReason = ""
+    -- , emailMP = True
+    -- , emailMinister = True
+    -- , submitFoi = True
+    -- , receiveUpdates = False
+    -- , classAction = False
+    -- , hasPersonalCircumstances = False
+    -- , personalCircumstances = initialCircumstances
+    -- }
+    { firstName = "a"
+    , lastName = "a"
+    , email = "a@a.com"
+    , address = "b"
+    , suburb = "c"
+    , postcode = "2000"
+    , dob = "12/2/2009"
+    , phone = "1234567890"
+    , crn = "123456789a"
+    , debtReason = "d"
     , emailMP = True
     , emailMinister = True
     , submitFoi = True
-    , receiveUpdates = False
-    , classAction = False
+    , receiveUpdates = True
+    , classAction = True
     , hasPersonalCircumstances = False
     , personalCircumstances = initialCircumstances
     }
@@ -196,6 +214,7 @@ type Msg
     | GoToPersonalDetails
     | GoToPersonalCircumstances
     | GoToFinalStep
+    | RestartForm
     | SubmitForm
     | GotResponse (Result Http.Error String)
     | ToggleModuleSize ModuleSize
@@ -480,6 +499,9 @@ update msg model =
         SubmitForm ->
             ( { model | response = Loading }, submitForm model )
 
+        RestartForm ->
+            ( { model | response = Nothing }, Cmd.none )
+
         GotResponse response ->
             ( { model | response = Res response }, Cmd.none )
 
@@ -593,39 +615,39 @@ personalDetailsView details model currentPane =
         ]
         [ div [ class "form-item" ]
             [ label [ class "", for "firstName" ] [ text "First Name" ]
-            , input [ type_ "text", id "firstName", name "firstName", placeholder "First Name", value details.firstName, onInput SetFirstName ] []
+            , input [ type_ "text", required True, id "firstName", name "firstName", placeholder "First Name", value details.firstName, onInput SetFirstName ] []
             ]
         , div [ class "form-item" ]
             [ label [ class "", for "lastName" ] [ text "Last Name" ]
-            , input [ type_ "text", id "lastName", name "lastName", placeholder "Last Name", value details.lastName, onInput SetLastName ] []
+            , input [ type_ "text", required True, id "lastName", name "lastName", placeholder "Last Name", value details.lastName, onInput SetLastName ] []
             ]
         , div [ class "form-item" ]
             [ label [ class "", for "email" ] [ text "Email" ]
-            , input [ type_ "email", id "email", name "email", placeholder "Email", value details.email, value details.email, onInput SetEmail ] []
+            , input [ type_ "email", required True, id "email", name "email", placeholder "Email", value details.email, value details.email, onInput SetEmail ] []
             ]
         , div [ class "form-item" ]
             [ label [ class "", for "address" ] [ text "Address" ]
-            , input [ type_ "text", id "address", name "address", placeholder "Address", value details.address, value details.address, onInput SetAddress ] []
+            , input [ type_ "text", required True, id "address", name "address", placeholder "Address", value details.address, value details.address, onInput SetAddress ] []
             ]
         , div [ class "form-item" ]
             [ label [ class "", for "suburb" ] [ text "Suburb" ]
-            , input [ type_ "text", id "suburb", name "suburb", placeholder "Suburb", value details.suburb, value details.suburb, onInput SetSuburb ] []
+            , input [ type_ "text", required True, id "suburb", name "suburb", placeholder "Suburb", value details.suburb, value details.suburb, onInput SetSuburb ] []
             ]
         , div [ class "form-item" ]
             [ label [ class "", for "postcode" ] [ text "Post Code" ]
-            , input [ type_ "text", id "postcode", name "postcode", placeholder "Post Code", value details.postcode, pattern "^[0-9]{4}$", title "Your postcode should be 4 digits", value details.postcode, onInput SetPostcode ] []
+            , input [ type_ "text", required True, id "postcode", name "postcode", placeholder "Post Code", value details.postcode, pattern "^[0-9]{4}$", title "Your postcode should be 4 digits", value details.postcode, onInput SetPostcode ] []
             ]
         , div [ class "form-item" ]
             [ label [ class "", for "dob" ] [ text "Date of Birth" ]
-            , input [ type_ "date", id "dob", name "dob", placeholder "dd/mm/yyyy", value details.dob, value details.dob, onInput SetDob ] []
+            , input [ type_ "date", required True, id "dob", name "dob", placeholder "dd/mm/yyyy", value details.dob, onInput SetDob ] []
             ]
         , div [ class "form-item" ]
             [ label [ class "", for "Phone" ] [ text "Phone" ]
-            , input [ type_ "text", id "Phone", name "Phone", placeholder "Phone", value details.phone, pattern "^[0-9]{10,16}$", value details.phone, onInput SetPhone ] []
+            , input [ type_ "text", required True, id "Phone", name "Phone", placeholder "Phone", value details.phone, pattern "^[0-9]{10,16}$", value details.phone, onInput SetPhone ] []
             ]
         , div [ class "form-item" ]
             [ label [ class "", for "crn" ] [ text "Centrelink Reference Number (CRN)" ]
-            , input [ type_ "text", id "crn", name "crn", placeholder "123456789A", value details.crn, pattern "^[0-9]{9}[a-zA-Z]{1}$", title "Your Centrelink CRN should be 9 digits followed by 1 letter", value details.crn, onInput SetCRN ] []
+            , input [ type_ "text", required True, id "crn", name "crn", placeholder "123456789A", value details.crn, pattern "^[0-9]{9}[a-zA-Z]{1}$", title "Your Centrelink CRN should be 9 digits followed by 1 letter", value details.crn, onInput SetCRN ] []
             ]
         , button [ type_ "submit", class "btn btn-primary mt-4" ] [ text "Next" ]
         ]
@@ -633,10 +655,10 @@ personalDetailsView details model currentPane =
 
 letterView : Details -> Pane -> Html Msg
 letterView details currentPane =
-    div
+    Html.form
         [ class "form-container"
         , classList [ ( "hide", not (currentPane == Letter) ) ]
-        , onSubmit GoToLetter
+        , onSubmit GoToPersonalCircumstances
         ]
         [ div [ class "alert-container" ]
             [ p [ class "" ]
@@ -660,11 +682,12 @@ letterView details currentPane =
                 , placeholder "Explain to Centrelink in a few sentences why you feel the letter you received is incorrect. Please keep it short and aim to stick to the facts as much as possible."
                 , value details.debtReason
                 , onInput SetdebtReason
+                , required True
                 ]
                 []
             ]
         , button [ class "btn btn-primary btn-outline mt-4 mr-2", onClick GoToPersonalDetails ] [ text "Back" ]
-        , button [ class "btn btn-primary mt-4", onClick GoToPersonalCircumstances ] [ text "Next" ]
+        , button [ type_ "submit", class "btn btn-primary mt-4" ] [ text "Next" ]
         ]
 
 
@@ -784,28 +807,32 @@ moduleView model =
 
 errorSubmitView : Html Msg
 errorSubmitView =
-    div [ class "form-container mt-5" ] [ text "error" ]
+    div [ class "form-container error-container mt-4" ]
+        [ h2 [ class "error-title h4" ] [ text "Sorry! Something went wrong. " ]
+        , a [ class "link", onClick RestartForm ] [ b [] [ text "Click here to try again" ] ]
+        ]
 
 
 loadingSubmitView : Html Msg
 loadingSubmitView =
-    div [ class "form-container mt-5" ]
-        [ p [] [ text "loading indicator" ]
+    div [ class "form-container loading-container mt-5" ]
+        [ img [ src "/static/images/spinner.svg", alt "Loading..." ] []
         ]
 
 
 successSubmitView : Html Msg
 successSubmitView =
-    div [ class "form-container success-container mt-5" ]
+    div [ class "form-container success-container mt-4" ]
         [ h2 [ class "success-title h4" ] [ text "Success! We've put your appeal letter together and posted it to Centrelink. " ]
         , div [ class "alert-container" ]
             [ p [] [ text "You should receive an email from us (GetUp!) confirming that all documents have been correctly compiled and submitted. If you do not receive this email within 24 hours, please contact us (email info@getup.org.au) immediately as it means your request for a review may not have been correctly submitted." ]
             ]
         , p [] [ b [] [ text "What happens from here?" ] ]
-
-        , ul [] [
-            li [] [ text "If you haven't heard from Centrelink three weeks after submitting your review on this website, call Centrelink or go to an office in person to make sure they have received your appeal. Ask for a receipt number, which you should then use for all future communication with them. If they haven't received your appeal after three weeks, it is important you get in touch with Legal Aid and get further advice."]
-        ]
+        , ul []
+            [ li [] [ text "If you haven't heard from Centrelink three weeks after submitting your review on this website, call Centrelink or go to an office in person to make sure they have received your appeal. Ask for a receipt number, which you should then use for all future communication with them. If they haven't received your appeal after three weeks, it is important you get in touch with Legal Aid and get further advice." ]
+            , li [] [ text "Currently, ARO reviews are taking somewhere between 2 to 6 months to resolve. You should hear from CentreLink at some point during this time, either because they are seeking further clarification from you, or hopefully to tell you they have reviewed your debt and reduced it, or cancelled it altogether. There is also a small chance that it could be increased, however." ]
+            , li [] [ text "Hopefully, that's it. However if you are unhappy with the ARO decision, you have the right to appeal their decision to the Social Services and Child Support division of the Administrative Appeals Tribunal, which lawyers can help you with." ]
+            ]
         ]
 
 
@@ -816,8 +843,9 @@ showModule req model =
             moduleView model
 
         Res (Ok _) ->
-            successSubmitView
+            errorSubmitView
 
+        -- successSubmitView
         Loading ->
             loadingSubmitView
 
@@ -873,6 +901,7 @@ view model =
                     , showModule model.response model
 
                     -- , showModule (Res (Ok "")) model
+                    -- , showModule Loading model
                     ]
                 ]
             ]

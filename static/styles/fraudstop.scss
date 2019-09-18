@@ -2,7 +2,7 @@
   border-radius: $global-radius;
 }
 .form-container {
-  padding: 0 64px;
+  padding: 0 32px;
   min-height: 70vmin;
 
   &.personal-details {
@@ -141,6 +141,37 @@
       }
     }
   }
+}
+
+.form-container.success-container {
+  padding: 0 32px;
+  .success-title {
+    font-weight: bold;
+    color: $ns-orange-500;
+    margin-bottom: 32px;
+  }
+}
+
+.form-container.error-container {
+  padding: 0 32px;
+  .error-title {
+    font-weight: bold;
+    color: $ns-orange-500;
+    margin-bottom: 32px;
+  }
+  .link {
+    color: $ns-green-700;
+    border-bottom: 1px solid $gray-400;
+    &:hover {
+      border-bottom: 1px solid $ns-orange-500;
+    }
+  }
+}
+
+.form-container.loading-container {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
 }
 
 .alert-container {
