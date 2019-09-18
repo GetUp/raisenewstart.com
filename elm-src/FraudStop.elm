@@ -70,7 +70,7 @@ type ModuleSize
 type SubmitResponse
     = Res (Result Http.Error String)
     | Loading
-    | Nothing
+    | NotSubmitted
 
 
 initialAccordions : List Accordion
@@ -135,7 +135,7 @@ initialModel : Model
 initialModel =
     { accordions = initialAccordions
     , currentPane = FinalStep
-    , response = Nothing
+    , response = NotSubmitted
     , details = initialDetails
     , moduleSize = Shrunk
     }
@@ -500,7 +500,7 @@ update msg model =
             ( { model | response = Loading }, submitForm model )
 
         RestartForm ->
-            ( { model | response = Nothing }, Cmd.none )
+            ( { model | response = NotSubmitted }, Cmd.none )
 
         GotResponse response ->
             ( { model | response = Res response }, Cmd.none )
@@ -839,7 +839,7 @@ successSubmitView =
 showModule : SubmitResponse -> Model -> Html Msg
 showModule req model =
     case req of
-        Nothing ->
+        NotSubmitted ->
             moduleView model
 
         Res (Ok _) ->
