@@ -70,7 +70,7 @@ type ModuleSize
 type SubmitResponse
     = Res (Result Http.Error String)
     | Loading
-    | Nothing
+    | NotSubmitted
 
 
 initialAccordions : List Accordion
@@ -135,7 +135,7 @@ initialModel : Model
 initialModel =
     { accordions = initialAccordions
     , currentPane = FinalStep
-    , response = Nothing
+    , response = NotSubmitted
     , details = initialDetails
     , moduleSize = Shrunk
     }
@@ -163,13 +163,17 @@ encode model =
 
 encodePersonalCircumstances : Circumstances -> Encode.Value
 encodePersonalCircumstances circumstances =
-    Encode.object
-        [ ( "illness", Encode.bool circumstances.illness )
-        , ( "financialHardship", Encode.bool circumstances.financialHardship )
-        , ( "addiction", Encode.bool circumstances.addiction )
-        , ( "homelessness", Encode.bool circumstances.homelessness )
-        , ( "other", Encode.string circumstances.other )
-        ]
+    let all =
+            [ ( "Illness (including mental illness)", circumstances.illness )
+            , ( "Financial hardship", circumstances.financialHardship )
+            , ( "Addiction", circumstances.addiction )
+            , ( "Homelessness", circumstances.homelessness )
+            , ( circumstances.other, not (String.isEmpty circumstances.other) )
+            ]
+        filterCircumstances (s, b) = if b then Just s else Nothing
+        list = List.filterMap filterCircumstances all
+    in
+    Encode.list Encode.string list
 
 
 init : () -> ( Model, Cmd Msg )
@@ -500,7 +504,7 @@ update msg model =
             ( { model | response = Loading }, submitForm model )
 
         RestartForm ->
-            ( { model | response = Nothing }, Cmd.none )
+            ( { model | response = NotSubmitted }, Cmd.none )
 
         GotResponse response ->
             ( { model | response = Res response }, Cmd.none )
@@ -839,7 +843,7 @@ successSubmitView =
 showModule : SubmitResponse -> Model -> Html Msg
 showModule req model =
     case req of
-        Nothing ->
+        NotSubmitted ->
             moduleView model
 
         Res (Ok _) ->
