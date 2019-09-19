@@ -22,24 +22,18 @@ collections:
                 { label: 'blurb', name: 'blurb', widget: 'text' },
               ]
           }
-          - {
-            label: Income Calculator,
+          - label: Income Calculator,
             name: incomecalculator,
             widget: object,
             fields:
-              [
-                { label: 'title', name: 'title', widget: 'string' },
-                { label: 'defaultincome', name: 'defaultincome', widget: 'string' },
-                {
-                  label: 'otherincome',
-                  name: 'otherincome',
-                  widget: 'list',
-                  fields:
-                    - { label: title, name: title, widget: string }
-                    - { label: wagesPerWeek, name: wagesPerWeek, widget: string }
-                },
-              ]
-          }
+              - { label: 'title', name: 'title', widget: 'string' }
+              - { label: 'defaultincome', name: 'defaultincome', widget: 'string' }
+              - label: 'otherincome'
+                name: 'otherincome'
+                widget: 'list'
+                fields:
+                  - { label: title, name: title, widget: string }
+                  - { label: wagesPerWeek, name: wagesPerWeek, widget: string }          
           - label: 'Locations'
             name: 'locations'
             widget: 'list'
