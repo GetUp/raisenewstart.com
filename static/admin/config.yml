@@ -59,3 +59,18 @@ collections:
                 { label: 'link', name: 'link', widget: 'string' },
                 { label: 'moduleHeading', name: 'moduleHeading', widget: 'text' },
               ]
+      - label: 'MP tracker'
+        name: 'mptracker'
+        file: 'content/mptracker.md'
+        fields:
+          - {
+              label: Hero,
+              name: hero,
+              widget: object,
+              fields:
+                [
+                  { label: 'heading', name: 'heading', widget: 'text' },
+                  { label: 'subheading', name: 'subheading', widget: 'text' },
+                  { label: 'button name', name: 'buttonName', widget: 'string' },
+                ],
+            }

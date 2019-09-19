@@ -5,6 +5,7 @@ import Nav from '../components/Nav'
 import LogoAnimation from '../components/LogoAnimation'
 import Modal from '../components/Modal'
 import content from '../content/index.md'
+import Head from '../components/Head'
 
 const PageGrid = ({ children, className }) => (
   <div className='grid-container'>
@@ -278,6 +279,7 @@ const Index = () => {
   const c = content.attributes
   return (
     <>
+      <Head/>
       <Nav />
       <Hero data={c.hero} />
       <IncomeCalculator data={c.incomecalculator} />
