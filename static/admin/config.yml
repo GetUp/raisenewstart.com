@@ -8,12 +8,11 @@ collections:
     files:
       - label: 'Index'
         name: 'index'
-        file: 'contnet/index.md'
+        file: 'content/index.md'
         fields:
-          - {
-            label: Hero,
-            name: hero,
-            widget: object,
+          - label: Hero
+            name: hero
+            widget: object
             fields:
               [
                 { label: 'title', name: 'title', widget: 'string' },
@@ -21,7 +20,6 @@ collections:
                 { label: 'button', name: 'button', widget: 'string' },
                 { label: 'blurb', name: 'blurb', widget: 'text' },
               ]
-          }
           - label: Income Calculator,
             name: incomecalculator,
             widget: object,
@@ -33,7 +31,7 @@ collections:
                 widget: 'list'
                 fields:
                   - { label: title, name: title, widget: string }
-                  - { label: wagesPerWeek, name: wagesPerWeek, widget: string }          
+                  - { label: wagesPerWeek, name: wagesPerWeek, widget: string }
           - label: 'Locations'
             name: 'locations'
             widget: 'list'
@@ -50,10 +48,9 @@ collections:
               - { label: date, name: date, widget: string }
               - { label: location, name: location, widget: string }
               - { label: image, name: imag, widget: image }
-          - {
-            label: footercta,
-            name: footercta,
-            widget: object,
+          - label: footercta
+            name: footercta
+            widget: object
             fields:
               [
                 { label: 'title', name: 'title', widget: 'string' },
@@ -62,4 +59,3 @@ collections:
                 { label: 'link', name: 'link', widget: 'string' },
                 { label: 'moduleHeading', name: 'moduleHeading', widget: 'text' },
               ]
-          }
