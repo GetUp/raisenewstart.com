@@ -649,6 +649,10 @@ personalDetailsView details model currentPane =
 
 letterView : Details -> Pane -> Html Msg
 letterView details currentPane =
+    let
+        formatDob =
+            String.join "/" << List.reverse << String.split "-"
+    in
     Html.form
         [ class "form-container"
         , classList [ ( "hide", not (currentPane == Letter) ) ]
@@ -662,7 +666,7 @@ letterView details currentPane =
         , div [ class "letter-container" ]
             [ p [] [ text "I am writing to request a review by an Authorised Review Officer. My personal details, the decision I am appealing against, and my reasons for appealing are set out below." ]
             , p [ class "mb-0" ] [ text ("Name: " ++ details.firstName ++ " " ++ details.lastName) ]
-            , p [ class "mb-0" ] [ text ("Date of birth: " ++ details.dob) ]
+            , p [ class "mb-0" ] [ text ("Date of birth: " ++ formatDob details.dob) ]
             , p [ class "mb-0" ] [ text ("Address: " ++ details.address) ]
             , p [ class "mb-0" ] [ text ("CRN: " ++ details.crn) ]
             , p [ class "mb-0" ] [ text ("Telephone: " ++ details.phone) ]
