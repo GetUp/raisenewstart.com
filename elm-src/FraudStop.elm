@@ -1,7 +1,6 @@
 module FraudStop exposing (main)
 
 import Browser
-import Dict exposing (..)
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events exposing (..)
@@ -83,39 +82,21 @@ initialAccordions =
 
 initialDetails : Details
 initialDetails =
-    -- { firstName = ""
-    -- , lastName = ""
-    -- , email = ""
-    -- , address = ""
-    -- , suburb = ""
-    -- , postcode = ""
-    -- , dob = ""
-    -- , phone = ""
-    -- , crn = ""
-    -- , debtReason = ""
-    -- , emailMP = True
-    -- , emailMinister = True
-    -- , submitFoi = True
-    -- , receiveUpdates = False
-    -- , classAction = False
-    -- , hasPersonalCircumstances = False
-    -- , personalCircumstances = initialCircumstances
-    -- }
-    { firstName = "a"
-    , lastName = "a"
-    , email = "a@a.com"
-    , address = "b"
-    , suburb = "c"
-    , postcode = "2000"
-    , dob = "12/2/2009"
-    , phone = "1234567890"
-    , crn = "123456789a"
-    , debtReason = "d"
+    { firstName = ""
+    , lastName = ""
+    , email = ""
+    , address = ""
+    , suburb = ""
+    , postcode = ""
+    , dob = ""
+    , phone = ""
+    , crn = ""
+    , debtReason = ""
     , emailMP = True
     , emailMinister = True
     , submitFoi = True
-    , receiveUpdates = True
-    , classAction = True
+    , receiveUpdates = False
+    , classAction = False
     , hasPersonalCircumstances = False
     , personalCircumstances = initialCircumstances
     }
@@ -134,7 +115,7 @@ initialCircumstances =
 initialModel : Model
 initialModel =
     { accordions = initialAccordions
-    , currentPane = FinalStep
+    , currentPane = PersonalDetails
     , response = NotSubmitted
     , details = initialDetails
     , moduleSize = Shrunk
@@ -163,15 +144,24 @@ encode model =
 
 encodePersonalCircumstances : Circumstances -> Encode.Value
 encodePersonalCircumstances circumstances =
-    let all =
+    let
+        all =
             [ ( "Illness (including mental illness)", circumstances.illness )
             , ( "Financial hardship", circumstances.financialHardship )
             , ( "Addiction", circumstances.addiction )
             , ( "Homelessness", circumstances.homelessness )
             , ( circumstances.other, not (String.isEmpty circumstances.other) )
             ]
-        filterCircumstances (s, b) = if b then Just s else Nothing
-        list = List.filterMap filterCircumstances all
+
+        filterCircumstances ( s, b ) =
+            if b then
+                Just s
+
+            else
+                Nothing
+
+        list =
+            List.filterMap filterCircumstances all
     in
     Encode.list Encode.string list
 
@@ -847,9 +837,8 @@ showModule req model =
             moduleView model
 
         Res (Ok _) ->
-            errorSubmitView
+            successSubmitView
 
-        -- successSubmitView
         Loading ->
             loadingSubmitView
 
@@ -903,9 +892,6 @@ view model =
                         , p [] [ text "FraudStop makes it quick and easy to appeal an automated debt claim against you. All you need to do is enter a few details, explain why you want to appeal the debt claim against you, and hit send - FraudStop does the rest." ]
                         ]
                     , showModule model.response model
-
-                    -- , showModule (Res (Ok "")) model
-                    -- , showModule Loading model
                     ]
                 ]
             ]
