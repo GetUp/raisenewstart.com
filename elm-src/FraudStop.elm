@@ -198,7 +198,7 @@ type Msg
     | SetSubmitFoi
     | SetReceiveUpdates
     | SetClassAction
-    | SetHasPersonalCircumstances
+    | SetHasPersonalCircumstances Bool
     | SetIllness
     | SetFinancialHardship
     | SetAddiction
@@ -378,13 +378,13 @@ update msg model =
             in
             ( newDetails, Cmd.none )
 
-        SetHasPersonalCircumstances ->
+        SetHasPersonalCircumstances val ->
             let
                 details =
                     model.details
 
                 newDetails =
-                    { model | details = { details | hasPersonalCircumstances = details.hasPersonalCircumstances } }
+                    { model | details = { details | hasPersonalCircumstances = val } }
             in
             ( newDetails, Cmd.none )
 
@@ -698,9 +698,9 @@ personalCircumstancesView details currentPane =
         ]
         [ label [ class "mb-3" ] [ text "Do you have any specific personal circumstances which may have impacted your ability to report income or caused you significant hardship?" ]
         , div [ class "radio-buttons" ]
-            [ input [ class "mr-2", type_ "radio", id "impacted_ability_to_report_income_yes", value "Yes", onClick SetHasPersonalCircumstances, checked details.hasPersonalCircumstances ] []
+            [ input [ class "mr-2", type_ "radio", id "impacted_ability_to_report_income_yes", onClick (SetHasPersonalCircumstances True), checked details.hasPersonalCircumstances ] []
             , label [ for "impacted_ability_to_report_income_yes", class "mr-3" ] [ text "Yes" ]
-            , input [ class "mr-2", type_ "radio", id "impacted_ability_to_report_income_no", value "No", onClick SetHasPersonalCircumstances, checked (not details.hasPersonalCircumstances) ] []
+            , input [ class "mr-2", type_ "radio", id "impacted_ability_to_report_income_no", onClick (SetHasPersonalCircumstances False), checked (not details.hasPersonalCircumstances) ] []
             , label [ for "impacted_ability_to_report_income_no" ] [ text "No" ]
             ]
         , br [] []
