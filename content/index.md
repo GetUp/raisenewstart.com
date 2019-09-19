@@ -6,9 +6,7 @@ hero:
     Raise Newstart.
   button: Join the campaign
   blurb: >-
-    Lorem ipsum dolor, sit amet consectetur adipisicing elit. Asperiores, iusto. Illo,
-    voluptatum natus. Nemo animi exercitationem ad distinctio. Omnis et officia
-    possimus quam minus expedita reiciendis dignissimos laborum officiis adipisci?
+    There are more than 700,000 people currently looking for work, and more than 1.1 million people looking for more paid hours. <a href="https://www.abs.gov.au/ausstats/abs@.nsf/mf/6354.0" target="_blank">Yet according to the latest available data</a>, there are only 240,000 jobs available. Unemployment isn’t a choice, and people who are forced to experience it should be able to live with dignity and respect
 incomecalculator:
   title: Enter your annual income to compare
   defaultincome: 52000

@@ -52,7 +52,7 @@ const Hero = ({ data }) => (
       </PageGrid>
     </div>
     <PageGrid className='small-12 large-8'>
-      <p className='hero-blurb mt-5 mb-0'>{data.blurb}</p>
+      <div className='hero-blurb mt-5 mb-0' dangerouslySetInnerHTML={ {__html: data.blurb} } ></div>
     </PageGrid>
   </>
 )
@@ -153,7 +153,7 @@ const Stats = () => (
                 fontSize='78'
                 fontFamily='Inter'
                 fill='white'>
-                647k
+                723k
               </text>
             </svg>
           </div>
@@ -181,9 +181,9 @@ const Stats = () => (
             <h2 className='newstart-header'>Who is on Newstart?</h2>
           </div>
           <div className='small-12 medium-4 columns'>
-            <p className='newstart-paragraph'>
-              647,000 people receive the single rate of Newstart and Youth Allowance.
-            </p>
+            {/* <p className='newstart-paragraph'>
+              722,923 people receive Newstart.
+            </p> */}
           </div>
         </div>
       </div>
@@ -197,23 +197,23 @@ const Stats = () => (
             </p>
             <hr />
             <p className='stats-blurb'>
-              3 million people live in poverty in Australia, of whom 731,000 are children.
+              3 million Australians live in poverty.
             </p>
           </div>
           <div className='stats-item'>
             <p className='stats-number'>
-              3<sup>m</sup>
+              731k
             </p>
             <hr />
             <p className='stats-blurb'>
-              3 million people live in poverty in Australia, of whom 731,000 are children.
+              731,000 children live in poverty.
             </p>
           </div>
           <div className='stats-item'>
-            <p className='stats-number'>55%</p>
+            <p className='stats-number'>1.4<sup>m</sup></p>
             <hr />
             <p className='stats-blurb'>
-              3 million people live in poverty in Australia, of whom 731,000 are children.
+              1.4 million families are jobless.
             </p>
           </div>
 
@@ -221,29 +221,29 @@ const Stats = () => (
 
           <div className='stats-item'>
             <p className='stats-number'>
-              3<sup>m</sup>
+              21%
             </p>
             <hr />
             <p className='stats-blurb'>
-              3 million people live in poverty in Australia, of whom 731,000 are children.
+              21% of the 1.4m jobless families have no adult employment.
             </p>
           </div>
           <div className='stats-item'>
             <p className='stats-number'>
-              3<sup>m</sup>
+              339k
             </p>
             <hr />
             <p className='stats-blurb'>
-              3 million people live in poverty in Australia, of whom 731,000 are children.
+            339,000 jobless families with dependants, accounting for 11% of all families with dependants.
             </p>
           </div>
           <div className='stats-item'>
             <p className='stats-number'>
-              3<sup>m</sup>
+              $40
             </p>
             <hr />
             <p className='stats-blurb'>
-              3 million people live in poverty in Australia, of whom 731,000 are children.
+              $40/day: the amount people on Newstart have to cover food, rent, utilities, medicines, transport and clothing.
             </p>
           </div>
         </div>

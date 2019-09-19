@@ -1,9 +1,10 @@
-import React, { useState, useEffect, useRef } from 'react'
+import React, { useState, useEffect, useRef, useCallback, useMemo } from 'react'
 import Layout from '../components/Layout'
 import Form from './form.js'
 import Nav from '../components/Nav'
 import content from '../content/mptracker.md'
 import { CheckMark, CrossMark, AlertMark } from '../components/Icons'
+import Head from 'next/head'
 
 const PageGrid = ({ children, className }) => (
   <div className='grid-container'>
@@ -48,7 +49,7 @@ const Hero = () => (
   </>
 )
 
-const FooterCTA = ({ data }) => (
+const FooterCTA = ({ _data: data }) => (
   <>
     <div
       className='heart-background'
@@ -68,7 +69,11 @@ const FooterCTA = ({ data }) => (
   </>
 )
 
-const Tracker = ({ data }) => {
+const Tracker = ({ _data }) => {
+  const [data, setData] = useState(_data)
+  const [field, setField] = useState('')
+  const [order, setOrder] = useState(true)
+
   const getIcon = data => {
     switch (data) {
       case 'yes':
@@ -93,9 +98,28 @@ const Tracker = ({ data }) => {
         return ''
     }
   }
+
+  useEffect(() => {
+    if (data[0].electorate) {
+      setField('electorate')
+    } else {
+      setField('state')
+    }
+  }, [])
+
+  const sortedData = useMemo(
+    () => {
+      if (!field) return data
+      return data.sort((a, b) =>
+        order ? (a[field] > b[field] ? 1 : -1) : a[field] < b[field] ? 1 : -1
+      )
+    },
+    [data, order, field]
+  )
+
   return (
     <>
-      <div className='grid-container'>
+      <div className='grid-container mb-5'>
         <div className='grid-x'>
           <div className='small-12 columns'>
             <table id='mp-tracker-table'>
@@ -103,8 +127,7 @@ const Tracker = ({ data }) => {
                 <tr>
                   <th className='nosort' />
                   <th className='nosort' />
-                  <th className='nosort' />
-                  <th className='nosort' />
+                  {sortedData[0].electorate && <th className='nosort' />}
                   <th className='nosort' />
                   <th colSpan='3' className='bordered nosort'>
                     Meeting Invites
@@ -114,47 +137,93 @@ const Tracker = ({ data }) => {
                   <th colSpan='7' />
                 </tr>
                 <tr className='lower'>
-                  <th />
-                  <th>Party</th>
-                  <th>Name</th>
-                  <th>Electorate</th>
-                  <th>State</th>
-                  <th className='unbold centered'>First</th>
-                  <th className='unbold centered'>Second</th>
-                  <th className='unbold centered'>Third</th>
+                  <th
+                    className={field == 'name' && 'active'}
+                    onClick={() => {
+                      setField('name')
+                      setOrder(!order)
+                    }}>
+                    Name
+                  </th>
+                  <th
+                    className={field == 'party' && 'active'}
+                    onClick={() => {
+                      setField('party')
+                      setOrder(!order)
+                    }}>
+                    Party
+                  </th>
+                  {sortedData[0].electorate && (
+                    <th
+                      className={field == 'electorate' && 'active'}
+                      onClick={() => {
+                        setField('electorate')
+                        setOrder(!order)
+                      }}>
+                      Electorate
+                    </th>
+                  )}
+                  <th
+                    className={field == 'state' && 'active'}
+                    onClick={() => {
+                      setField('state')
+                      setOrder(!order)
+                    }}>
+                    State
+                  </th>
+                  <th
+                    className={`centered ${field == 'firstMeeting' && 'active'}`}
+                    onClick={() => {
+                      setField('firstMeeting')
+                      setOrder(!order)
+                    }}>
+                    First
+                  </th>
+                  <th
+                    className={`centered ${field == 'secondMeeting' && 'active'}`}
+                    onClick={() => {
+                      setField('secondMeeting')
+                      setOrder(!order)
+                    }}>
+                    Second
+                  </th>
+                  <th
+                    className={`centered ${field == 'thirdMeeting' && 'active'}`}
+                    onClick={() => {
+                      setField('thirdMeeting')
+                      setOrder(!order)
+                    }}>
+                    Third
+                  </th>
                 </tr>
               </thead>
               <tbody>
-                {data.map(item => (
+                {sortedData.map(item => (
                   <tr key={item.name}>
-                    <td width='24' className='partylogo'>
-                      <span className={`${item.party.toLowerCase()}`} />
-                    </td>
+                    <td className='bold'>{item.name}</td>
                     <td>{item.party}</td>
-                    <td>{item.name}</td>
-                    <td>{item.electorate}</td>
+                    {item.electorate && <td>{item.electorate}</td>}
                     <td>{item.state}</td>
-                    {console.log(item.meetingInvites)}
                     <td
                       width='80'
                       className={`
                         icon centered bordered-left
-                        ${getIconClass(item.meetingInvites.first)}`}>
-                      {getIcon(item.meetingInvites.first)}
+                        ${getIconClass(item.firstMeeting)}`}>
+                      {getIcon(item.firstMeeting)}
                     </td>
                     <td
                       width='80'
                       className={`
                         icon centered
-                        ${getIconClass(item.meetingInvites.second)}`}>
-                      {getIcon(item.meetingInvites.second)}
+                        ${getIconClass(item.secondMeeting)}`}>
+                      {getIcon(item.secondMeeting)}
                     </td>
                     <td
                       width='80'
                       className={`
                         icon centered
-                        ${getIconClass(item.meetingInvites.third)}`}>
-                      {getIcon(item.meetingInvites.third)}
+                        ${getIconClass(item.thirdMeeting)}`}>
+                      {getIcon(item.thirdMeeting)}
                     </td>
                   </tr>
                 ))}
@@ -169,29 +238,48 @@ const Tracker = ({ data }) => {
 
 const Index = () => {
   const c = content.attributes
-  // const mpTracker = [
-  //   {
-  //     party: 'Labor',
-  //     name: 'Bill Shorten',
-  //     electorate: 'Sydney',
-  //     state: 'NSW',
-  //     meetingInvites: { first: 1, second: 3, third: 4 }
-  //   },
-  //   {
-  //     party: 'Liberal',
-  //     name: 'Bill Shorten',
-  //     electorate: 'Sydney',
-  //     state: 'NSW',
-  //     meetingInvites: { first: 1, second: 2, third: 3 }
-  //   }
-  // ]
+  const [activeTab, setActiveTab] = useState(true)
+
+  const renderTracker = useMemo(
+    () => {
+      return activeTab ? (
+        <Tracker _data={c.mps} />
+      ) : (
+        <div>
+          <Tracker _data={c.senators} />{' '}
+        </div>
+      )
+    },
+    [activeTab]
+  )
+
   return (
     <>
       <Nav />
-
-      {/* <Hero /> */}
-      <FooterCTA data={c.hero} />
-      <Tracker data={c.mpTracker} />
+      <Head />
+      <FooterCTA _data={c.hero} />
+      <div className='grid-container mt-5'>
+        <div className='grid-x'>
+          <div className='small-12 cells'>
+            <div className='tabs'>
+              <a
+                className={`tab ${activeTab && 'active'}`}
+                onClick={() => setActiveTab(true)}>
+                MPs
+              </a>
+              <a
+                className={`tab ${!activeTab && 'active'}`}
+                onClick={() => setActiveTab(false)}>
+                Senators
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div className='tracker-container'>
+        {renderTracker}
+        {/* <Tracker _data={data} /> */}
+      </div>
     </>
   )
 }
