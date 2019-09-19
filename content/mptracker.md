@@ -5,7 +5,7 @@ hero:
     In a country as wealthy as Australia – being locked out of paid work, shouldn’t mean being locked into poverty.
   button: Join the campaign
 
-mpTracker:
+mps:
   - party: 'Labor'
     name: 'Bill Shorten'
     electorate: 'Sydney'

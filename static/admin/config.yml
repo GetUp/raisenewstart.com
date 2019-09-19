@@ -20,9 +20,9 @@ collections:
                 { label: 'button', name: 'button', widget: 'string' },
                 { label: 'blurb', name: 'blurb', widget: 'text' },
               ]
-          - label: Income Calculator,
-            name: incomecalculator,
-            widget: object,
+          - label: Income Calculator
+            name: incomecalculator
+            widget: object
             fields:
               - { label: 'title', name: 'title', widget: 'string' }
               - { label: 'defaultincome', name: 'defaultincome', widget: 'string' }
@@ -32,14 +32,6 @@ collections:
                 fields:
                   - { label: title, name: title, widget: string }
                   - { label: wagesPerWeek, name: wagesPerWeek, widget: string }
-          - label: 'Locations'
-            name: 'locations'
-            widget: 'list'
-            fields:
-              - { label: name, name: name, widget: string }
-              - { label: title, name: title, widget: string }
-              - { label: quote, name: quote, widget: text }
-              - { label: link, name: link, widget: string }
           - label: 'testimonials'
             name: 'testimonials'
             widget: 'list'
@@ -71,6 +63,23 @@ collections:
                 [
                   { label: 'heading', name: 'heading', widget: 'text' },
                   { label: 'subheading', name: 'subheading', widget: 'text' },
-                  { label: 'button name', name: 'buttonName', widget: 'string' },
+                  { label: 'button name', name: 'button', widget: 'string' },
                 ],
             }
+          - label: 'mps'
+            name: 'mps'
+            widget: 'list'
+            fields:
+              - { label: name, name: name, widget: string }
+              - { label: party, name: party, widget: string }
+              - { label: electorate, name: electorate, widget: string }
+              - { label: state, name: state, widget: string }
+              - label: 'meetingInvites'
+                name: 'meetingInvites'
+                widget: 'object'
+                fields:
+                  [
+                    { label: 'first', name: 'first', widget: 'string' },
+                    { label: 'second', name: 'second', widget: 'string' },
+                    { label: 'third', name: 'third', widget: 'string' },
+                  ]
