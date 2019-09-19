@@ -637,7 +637,7 @@ personalDetailsView details model currentPane =
             ]
         , div [ class "form-item" ]
             [ label [ class "", for "Phone" ] [ text "Phone" ]
-            , input [ type_ "text", required True, id "Phone", name "Phone", placeholder "Phone", value details.phone, pattern "^[0-9]{10,16}$", value details.phone, onInput SetPhone ] []
+            , input [ type_ "text", required True, id "Phone", name "Phone", placeholder "Phone", value details.phone, pattern "^[+ 0-9]{10,16}$", title "Please enter your phone number with area code. e.g. 02 9876 5432", value details.phone, onInput SetPhone ] []
             ]
         , div [ class "form-item" ]
             [ label [ class "", for "crn" ] [ text "Centrelink Reference Number (CRN)" ]
