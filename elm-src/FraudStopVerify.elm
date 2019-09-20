@@ -1,23 +1,26 @@
 module FraudStopVerify exposing (main)
 
 import Browser
+import Char
 import Html exposing (..)
 import Html.Attributes exposing (alt, class, src, type_)
 import Html.Events exposing (onSubmit)
 import Http
+import Json.Decode as Decode
 import Json.Encode as Encode
+import Parser as P exposing ((|.), (|=), Parser)
+import Set
 
 
-type alias Model =
-    { response : SubmitResponse
-    , verification : Verification
-    }
+
+-- MODEL
 
 
-type SubmitResponse
-    = Res (Result Http.Error String)
+type Model
+    = Verified Verification
+    | VerificationError
     | Loading
-    | NotSubmitted
+    | Res (Result Http.Error String)
 
 
 type alias Verification =
@@ -34,33 +37,59 @@ encode verification =
         ]
 
 
-initialVerification : Verification
-initialVerification =
-    { requestId = 0
-    , secureToken = ""
-    }
+type alias Flags =
+    Decode.Value
 
 
-initialModel : Model
-initialModel =
-    { response = NotSubmitted
-    , verification = initialVerification
-    }
+flagsDecoder : Decode.Decoder String
+flagsDecoder =
+    Decode.field "query" Decode.string
 
 
-init : () -> ( Model, Cmd Msg )
-init _ =
-    ( initialModel, Cmd.none )
+verificationParser : Parser Verification
+verificationParser =
+    let
+        hexChar =
+            { start = Char.isHexDigit
+            , inner = Char.isHexDigit
+            , reserved = Set.empty
+            }
+    in
+    P.succeed Verification
+        |. P.keyword "?request_id"
+        |. P.symbol "="
+        |= P.int
+        |. P.keyword "&secure_token"
+        |. P.symbol "="
+        |= P.variable hexChar
+        |. P.end
 
 
-main : Program () Model Msg
-main =
-    Browser.element
-        { init = init
-        , view = view
-        , update = update
-        , subscriptions = \_ -> Sub.none
-        }
+init : Flags -> ( Model, Cmd Msg )
+init flags =
+    let
+        queryResult =
+            Decode.decodeValue flagsDecoder flags
+    in
+    case queryResult of
+        Ok queryString ->
+            let
+                maybeV =
+                    P.run verificationParser queryString
+            in
+            case maybeV of
+                Ok verification ->
+                    ( Verified verification, Cmd.none )
+
+                Err _ ->
+                    ( VerificationError, Cmd.none )
+
+        Err _ ->
+            ( VerificationError, Cmd.none )
+
+
+
+-- UPDATE
 
 
 type Msg
@@ -80,51 +109,52 @@ update msg model =
             ( model, Cmd.none )
 
         SubmitVerification ->
-            ( { model | response = Loading }, submitVerification model )
+            case model of
+                Verified verification ->
+                    ( Loading, submitVerification verification )
 
-        GotResponse response ->
-            ( { model | response = Res response }, Cmd.none )
+                _ ->
+                    ( model, Cmd.none )
+
+        GotResponse state ->
+            ( Res state, Cmd.none )
 
 
-submitVerification : Model -> Cmd Msg
-submitVerification model =
+submitVerification : Verification -> Cmd Msg
+submitVerification verification =
     let
         _ =
-            Debug.log "Submit " model
+            Debug.log "Submit " verification
     in
     Http.post
         { url = "https://t1o3wcwixf.execute-api.us-east-1.amazonaws.com/dev/verify"
-        , body = Http.jsonBody (encode model.verification)
+        , body = Http.jsonBody (encode verification)
         , expect = Http.expectString GotResponse
         }
 
 
-loadingSubmitView : Html Msg
-loadingSubmitView =
-    div [ class "form-container loading-container mt-5" ]
-        [ img [ src "/static/images/spinner.svg", alt "Loading..." ] []
+
+-- VIEW
+
+
+view : Model -> Html Msg
+view model =
+    div []
+        [ div [ class "grid-container fluid fraudstop" ]
+            [ div [ class "grid-x grid-padding-x " ]
+                [ showModule model ]
+            ]
         ]
 
 
-successSubmitView : Html Msg
-successSubmitView =
-    div [] [ text "Success! We've put your appeal letter together and posted it to Centrelink. " ]
+showModule : Model -> Html Msg
+showModule model =
+    case model of
+        VerificationError ->
+            verificationErrorView
 
-
-errorSubmitView : Html Msg
-errorSubmitView =
-    div [] [ text "Click here to try again" ]
-
-
-showModule : SubmitResponse -> Model -> Html Msg
-showModule req model =
-    case req of
-        NotSubmitted ->
-            Html.form
-                [ class "form-container"
-                , onSubmit SubmitVerification
-                ]
-                [ button [ type_ "submit", class "btn btn-primary mt-4" ] [ text "Verify email" ] ]
+        Verified verification ->
+            verifiedView
 
         Loading ->
             loadingSubmitView
@@ -136,11 +166,54 @@ showModule req model =
             errorSubmitView
 
 
-view : Model -> Html Msg
-view model =
+verificationErrorView : Html Msg
+verificationErrorView =
     div []
-        [ div [ class "grid-container fluid fraudstop" ]
-            [ div [ class "grid-x grid-padding-x " ]
-                [ showModule model.response model ]
-            ]
+        [ text "Your details could not be verified. :("
         ]
+
+
+verifiedView : Html Msg
+verifiedView =
+    Html.form
+        [ class "form-container"
+        , onSubmit SubmitVerification
+        ]
+        [ button [ type_ "submit", class "btn btn-primary mt-4" ]
+            [ text "Verify email" ]
+        ]
+
+
+loadingSubmitView : Html Msg
+loadingSubmitView =
+    div [ class "form-container loading-container mt-5" ]
+        [ img [ src "/static/images/spinner.svg", alt "Loading..." ] []
+        ]
+
+
+successSubmitView : Html Msg
+successSubmitView =
+    div []
+        [ text "Success! We've put your appeal letter together and posted it to Centrelink."
+        ]
+
+
+errorSubmitView : Html Msg
+errorSubmitView =
+    div []
+        [ text "There was an error. :("
+        ]
+
+
+
+-- MAIN
+
+
+main : Program Flags Model Msg
+main =
+    Browser.element
+        { init = init
+        , update = update
+        , view = view
+        , subscriptions = \_ -> Sub.none
+        }
