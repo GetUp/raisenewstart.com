@@ -8,8 +8,10 @@ import Html.Events exposing (onSubmit)
 import Http
 import Json.Decode as Decode
 import Json.Encode as Encode
-import Parser as P exposing ((|.), (|=), Parser)
-import Set
+import Maybe.Extra
+import Url
+import Url.Parser exposing (Parser)
+import Url.Parser.Query as Query
 
 
 
@@ -46,23 +48,12 @@ flagsDecoder =
     Decode.field "query" Decode.string
 
 
-verificationParser : Parser Verification
+verificationParser : Parser (Maybe Verification -> Maybe Verification) (Maybe Verification)
 verificationParser =
-    let
-        hexChar =
-            { start = Char.isHexDigit
-            , inner = Char.isHexDigit
-            , reserved = Set.empty
-            }
-    in
-    P.succeed Verification
-        |. P.keyword "?request_id"
-        |. P.symbol "="
-        |= P.int
-        |. P.keyword "&secure_token"
-        |. P.symbol "="
-        |= P.variable hexChar
-        |. P.end
+    Url.Parser.query <|
+        Query.map2 (Maybe.map2 Verification)
+            (Query.int "request_id")
+            (Query.string "secure_token")
 
 
 init : Flags -> ( Model, Cmd Msg )
@@ -75,13 +66,15 @@ init flags =
         Ok queryString ->
             let
                 maybeV =
-                    P.run verificationParser queryString
+                    Url.fromString ("https://_" ++ queryString)
+                        |> Maybe.andThen (Url.Parser.parse verificationParser)
+                        |> Maybe.Extra.join
             in
             case maybeV of
-                Ok verification ->
+                Just verification ->
                     ( Verified verification, Cmd.none )
 
-                Err _ ->
+                Nothing ->
                     ( VerificationError, Cmd.none )
 
         Err _ ->
