@@ -32,11 +32,11 @@ const Nav = () => {
             <ul className='menu align-right'>
               {links.map(link => (
                 <li className='nav-item' key={link.label}>
-                  <Link
-                    activeClassName='active'
-                    prefetch
-                    href={{ pathname: link.href, query }}>
-                    <a className='nav-link'>{link.label}</a>
+                  <Link prefetch href={{ pathname: link.href, query }}>
+                    <a
+                      className={`nav-link ${router.route == link.href ? 'active' : ''}`}>
+                      {link.label}
+                    </a>
                   </Link>
                 </li>
               ))}

@@ -46,6 +46,29 @@
     &.unbold {
       font-weight: 500;
     }
+
+    &.meeting {
+      text-transform: none;
+    }
+
+    .show-only-in-small {
+      display: none;
+    }
+
+    @media screen and (max-width: 600px) {
+      font-size: 0.7em;
+      font-weight: bold;
+      letter-spacing: 0.02em;
+
+      .hide-in-small,
+      &.hide-in-small {
+        display: none;
+      }
+
+      .show-only-in-small {
+        display: block;
+      }
+    }
   }
 
   tbody {
@@ -74,6 +97,18 @@
           height: 20px;
           display: block;
           margin: 0 auto;
+        }
+      }
+      @media screen and (max-width: 600px) {
+        font-size: 0.8em;
+        letter-spacing: 0.02em;
+        height: 50px;
+
+        &.hide-in-small {
+          display: none;
+        }
+        &.centered-in-small {
+          text-align: center;
         }
       }
 
@@ -111,6 +146,9 @@
   background: $gray-800;
   padding: 20px 0 32px 0;
   // border-top: 2px solid $gray-400;
+  @media screen and (max-width: 600px) {
+    overflow: scroll;
+  }
 }
 
 .tabs {
@@ -130,6 +168,49 @@
     }
     &:hover:not(.active) {
       background: $gray-400;
+    }
+  }
+}
+
+.mp-tracker {
+  .icon--wrapper {
+    display: flex;
+  }
+  .small {
+    color: $gray-600;
+    font-size: 0.8em;
+  }
+  .icon {
+    padding: 4px;
+    height: 22px;
+    width: 36px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 4px;
+    margin-right: 4px;
+    &-container {
+      display: flex;
+      align-items: center;
+      margin-bottom: 8px;
+      margin-right: 16px;
+      .text {
+        color: $gray-800;
+        font-weight: 700;
+        font-size: 0.8em;
+      }
+    }
+    svg {
+      height: 14px;
+    }
+    &.cross {
+      background: #c1272d;
+    }
+    &.check {
+      background: #3fb23c;
+    }
+    &.alert {
+      background: #fbb03b;
     }
   }
 }

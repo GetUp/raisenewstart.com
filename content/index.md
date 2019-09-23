@@ -20,16 +20,14 @@ incomecalculator:
     - title: Newstart
       wagesPerWeek: 278
 testimonials:
-  - name: Patrick Stewart
-    title: Founder & Leader, X-Men
+  - name: '- Hayden'
     quote: >-
-      Lorem ipsum dolor sit amet consectetur, adipisicing elit. Quisquam atque fugiat fuga, corporis cupiditate, aliquid animi consequatur nemo iure, deleniti reiciendis vel voluptatem officia vitae sed explicabo totam autem recusandae.
-    image: /static/images/patrick.png
-  - name: Patrick Stewart
-    title: Founder & Leader, X-Men
+      When I come across my peers, people who are in exactly the same situation as me, we don’t feel so alone. And we hear each others stories and the wins we’ve had. And we feel like a family and that we actually do matter to people. And it actually empowers us, so when we are speaking up, other people feel brave enough to add their voices as well.
+    image: /static/images/hayden.png
+  - name: '- Imogen'
     quote: >-
-      Lorem ipsum dolor sit amet consectetur, adipisicing elit. Quisquam atque fugiat fuga, corporis cupiditate, aliquid animi consequatur nemo iure, deleniti reiciendis vel voluptatem officia vitae sed explicabo totam autem recusandae.
-    image: /static/images/patrick.png
+      We come from different backgrounds, we come from all walks of life. And those that end up falling through the cracks, do need a society that maintains a standard that help them keep their dignity.
+    image: /static/images/imogen.png
 footercta:
   title: Raise Newstart.
   subtitle: >-

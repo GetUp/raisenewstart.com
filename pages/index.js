@@ -6,6 +6,7 @@ import LogoAnimation from '../components/LogoAnimation'
 import Modal from '../components/Modal'
 import content from '../content/index.md'
 import Head from '../components/Head'
+import Footer from '../components/Footer'
 
 const PageGrid = ({ children, className }) => (
   <div className='grid-container'>
@@ -52,7 +53,10 @@ const Hero = ({ data }) => (
       </PageGrid>
     </div>
     <PageGrid className='small-12 large-8'>
-      <div className='hero-blurb mt-5 mb-0' dangerouslySetInnerHTML={ {__html: data.blurb} } ></div>
+      <div
+        className='hero-blurb mt-5 mb-0'
+        dangerouslySetInnerHTML={{ __html: data.blurb }}
+      />
     </PageGrid>
   </>
 )
@@ -178,12 +182,12 @@ const Stats = () => (
       <div className='grid-container'>
         <div className={`grid-x align-bottom text-647k-container`}>
           <div className='small-12 medium-8 columns'>
-            <h2 className='newstart-header'>Who is on Newstart?</h2>
+            <h2 className='newstart-header'>
+              Who is on Newstart?<sup>1</sup>
+            </h2>
           </div>
           <div className='small-12 medium-4 columns'>
-            {/* <p className='newstart-paragraph'>
-              722,923 people receive Newstart.
-            </p> */}
+            {/* <p className='newstart-paragraph'>722,923 people receive Newstart.</p> */}
           </div>
         </div>
       </div>
@@ -197,55 +201,69 @@ const Stats = () => (
             </p>
             <hr />
             <p className='stats-blurb'>
-              3 million Australians live in poverty.
+              3 million Australians live in poverty.<sup>2</sup>
+            </p>
+          </div>
+          <div className='stats-item'>
+            <p className='stats-number'>731k</p>
+            <hr />
+            <p className='stats-blurb'>
+              731,000 children live in poverty.<sup>2</sup>
             </p>
           </div>
           <div className='stats-item'>
             <p className='stats-number'>
-              731k
+              1.4<sup>m</sup>
             </p>
             <hr />
             <p className='stats-blurb'>
-              731,000 children live in poverty.
-            </p>
-          </div>
-          <div className='stats-item'>
-            <p className='stats-number'>1.4<sup>m</sup></p>
-            <hr />
-            <p className='stats-blurb'>
-              1.4 million families are jobless.
+              1.4 million families are jobless.<sup>3</sup>
             </p>
           </div>
 
           <WavePattern colour='black' />
 
           <div className='stats-item'>
-            <p className='stats-number'>
-              21%
-            </p>
+            <p className='stats-number'>21%</p>
             <hr />
             <p className='stats-blurb'>
-              21% of the 1.4m jobless families have no adult employment.
+              21% of the 1.4m jobless families have no adult employment.<sup>3</sup>
             </p>
           </div>
           <div className='stats-item'>
-            <p className='stats-number'>
-              339k
-            </p>
+            <p className='stats-number'>339k</p>
             <hr />
             <p className='stats-blurb'>
-            339,000 jobless families with dependants, accounting for 11% of all families with dependants.
+              339,000 jobless families with dependants, accounting for 11% of all families
+              with dependants.<sup>3</sup>
             </p>
           </div>
           <div className='stats-item'>
-            <p className='stats-number'>
-              $40
-            </p>
+            <p className='stats-number'>$40</p>
             <hr />
             <p className='stats-blurb'>
-              $40/day: the amount people on Newstart have to cover food, rent, utilities, medicines, transport and clothing.
+              $40/day: the amount people on Newstart have to cover food, rent, utilities,
+              medicines, transport and clothing.<sup>4</sup>
             </p>
           </div>
+        </div>
+        <div className='references-list mt-3'>
+          <ul>
+            <li>
+              <sup>[1]</sup> Department of Social Services, Demographic Data, December
+              2018
+            </li>
+            <li>
+              <sup>[2]</sup> ACOSS, Poverty in Australia 2018
+            </li>
+            <li>
+              <sup>[3]</sup> Australian Bureau of Statistics, 2017, Labour Force: Jobless
+              Families, Cat. no. 6224.0.55.001
+            </li>
+            <li>
+              <sup>[4]</sup> Department of Human Services, Newstart Single Payment
+            </li>
+          </ul>
         </div>
       </PageGrid>
     </div>
@@ -279,13 +297,14 @@ const Index = () => {
   const c = content.attributes
   return (
     <>
-      <Head/>
+      <Head title='Raise Newstart | GetUp!' />
       <Nav />
       <Hero data={c.hero} />
       <IncomeCalculator data={c.incomecalculator} />
       <Testimonials data={c.testimonials} />
       <Stats />
       <FooterCTA data={c.footercta} />
+      <Footer />
     </>
   )
 }

@@ -4,7 +4,7 @@ import Footer from './Footer'
 
 const Layout = props => (
   <>
-    <Head title='Home' />
+    <Head title={props.title} />
     <Nav />
     {props.children}
     <Footer />

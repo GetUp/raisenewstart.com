@@ -79,19 +79,30 @@
 
   &-text {
     background: $ns-green-700;
-    // height: 100vh;
     background: $gray-900;
     color: white;
-    // overflow: scroll;
     padding: 32px 16px !important;
-    @media screen and (min-width: 600px) {
-      padding: 64px !important;
-    }
 
     &-wrapper {
       .logo {
         max-width: 120px;
       }
+    }
+
+    @media screen and (max-width: 600px) {
+      &-wrapper p {
+        font-size: 0.95em;
+      }
+      .logo {
+        max-width: 50px;
+      }
+      h1 {
+        color: $ns-green-700;
+      }
+    }
+
+    @media screen and (min-width: 600px) {
+      padding: 64px !important;
     }
   }
 
@@ -289,4 +300,29 @@
   }
   .radio-buttons {
   }
+}
+
+.questions--container {
+  .question {
+    display: flex;
+    align-items: center;
+    margin-bottom: 16px;
+  }
+  .arrow {
+    height: 12px;
+    margin-right: 8px;
+  }
+  a {
+    font-weight: bold;
+    display: block;
+    margin-bottom: 0;
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+}
+
+.answers--container {
+  background: $gray-200;
+  color: $gray-900;
 }

@@ -24,14 +24,31 @@ nav {
     }
   }
 
-  .nav-item a {
+  .nav-item .nav-link {
     color: $gray-600;
     font-weight: 600;
-    padding-left: 32px;
+    padding: 0 16px;
+
+    &.active {
+      color: $ns-orange-500;
+      position: relative;
+      &::before {
+        content: '';
+        position: absolute;
+        height: 2px;
+        bottom: -3px;
+        left: 12px;
+        width: calc(100% - 24px);
+        background: $ns-orange-500;
+      }
+    }
   }
   .nav-item:hover {
     a {
-      text-decoration: underline;
+      color: $ns-orange-500;
     }
+  }
+  .logo {
+    padding: 0px !important;
   }
 }

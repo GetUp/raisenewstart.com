@@ -4,7 +4,8 @@ import Form from './form.js'
 import Nav from '../components/Nav'
 import content from '../content/mptracker.md'
 import { CheckMark, CrossMark, AlertMark } from '../components/Icons'
-import Head from 'next/head'
+import Head from '../components/head'
+import Footer from '../components/Footer'
 
 const PageGrid = ({ children, className }) => (
   <div className='grid-container'>
@@ -52,16 +53,45 @@ const Hero = () => (
 const FooterCTA = ({ _data: data }) => (
   <>
     <div
-      className='heart-background'
+      className='heart-background mp-tracker'
       style={{ backgroundImage: `url(/static/images/heart-pattern.svg)` }}>
       <div className='grid-container footer'>
         <div className='grid-x'>
-          <div className='small-12 columns'>
-            <h2 className='footer-blurb h5'>{data.subheading}</h2>
-            <h3 className='footer-heading h1'>{data.heading}</h3>
-            <a href='#' className='btn'>
-              {data.button}
-            </a>
+          <div className='small-12 medium-10 large-8 columns'>
+            <h2 className='footer-blurb h3'>
+              Access to politics shouldn’t be determined your bank balance.{' '}
+            </h2>
+            <p className='mb-0'>
+              If the Government want to legislate about the lives of unemployed people,
+              and the programs they depend on – they need to hear their voices. We’re
+              working with a number of unemployed advocacy groups, that are independent –
+              both politically, and from GetUp – to track their efforts to meet with
+              Government MPs and Senators.
+            </p>
+            <hr />
+            <p className='mb-2'>
+              <strong className='small'>Legend</strong>
+            </p>
+            <div className='icon--wrapper'>
+              <div className='icon-container'>
+                <div className='icon cross'>
+                  <CrossMark />
+                </div>
+                <span className='text'>Declined</span>
+              </div>
+              <div className='icon-container'>
+                <div className='icon check'>
+                  <CheckMark />
+                </div>
+                <span className='text'>Accepted</span>
+              </div>
+              <div className='icon-container'>
+                <div className='icon alert'>
+                  <AlertMark />
+                </div>
+                <span className='text'>More Info</span>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -126,9 +156,11 @@ const Tracker = ({ _data }) => {
               <thead>
                 <tr>
                   <th className='nosort' />
-                  <th className='nosort' />
-                  {sortedData[0].electorate && <th className='nosort' />}
-                  <th className='nosort' />
+                  <th
+                    className={`nosort ${sortedData[0].electorate && 'hide-in-small'}`}
+                  />
+                  {sortedData[0].electorate && <th className={`nosort`} />}
+                  <th className={`nosort`} />
                   <th colSpan='3' className='bordered nosort'>
                     Meeting Invites
                   </th>
@@ -146,7 +178,7 @@ const Tracker = ({ _data }) => {
                     Name
                   </th>
                   <th
-                    className={field == 'party' && 'active'}
+                    className={`${field == 'party' && 'active'}`}
                     onClick={() => {
                       setField('party')
                       setOrder(!order)
@@ -155,7 +187,7 @@ const Tracker = ({ _data }) => {
                   </th>
                   {sortedData[0].electorate && (
                     <th
-                      className={field == 'electorate' && 'active'}
+                      className={`${field == 'electorate' && 'active'}`}
                       onClick={() => {
                         setField('electorate')
                         setOrder(!order)
@@ -164,7 +196,8 @@ const Tracker = ({ _data }) => {
                     </th>
                   )}
                   <th
-                    className={field == 'state' && 'active'}
+                    className={`${sortedData[0].electorate && 'hide-in-small'} ${field ==
+                      'state' && 'active'}`}
                     onClick={() => {
                       setField('state')
                       setOrder(!order)
@@ -172,28 +205,37 @@ const Tracker = ({ _data }) => {
                     State
                   </th>
                   <th
-                    className={`centered ${field == 'firstMeeting' && 'active'}`}
+                    className={`centered meeting ${field == 'firstMeeting' && 'active'}`}
                     onClick={() => {
                       setField('firstMeeting')
                       setOrder(!order)
                     }}>
-                    First
+                    <span class='hide-in-small'>First</span>
+                    <span class='show-only-in-small'>
+                      1<sup>st</sup>
+                    </span>
                   </th>
                   <th
-                    className={`centered ${field == 'secondMeeting' && 'active'}`}
+                    className={`centered meeting ${field == 'secondMeeting' && 'active'}`}
                     onClick={() => {
                       setField('secondMeeting')
                       setOrder(!order)
                     }}>
-                    Second
+                    <span class='hide-in-small'>Second</span>
+                    <span class='show-only-in-small'>
+                      2<sup>nd</sup>
+                    </span>
                   </th>
                   <th
-                    className={`centered ${field == 'thirdMeeting' && 'active'}`}
+                    className={`centered meeting ${field == 'thirdMeeting' && 'active'}`}
                     onClick={() => {
                       setField('thirdMeeting')
                       setOrder(!order)
                     }}>
-                    Third
+                    <span class='hide-in-small'>Third</span>
+                    <span class='show-only-in-small'>
+                      3<sup>rd</sup>
+                    </span>
                   </th>
                 </tr>
               </thead>
@@ -201,9 +243,13 @@ const Tracker = ({ _data }) => {
                 {sortedData.map(item => (
                   <tr key={item.name}>
                     <td className='bold'>{item.name}</td>
-                    <td>{item.party}</td>
-                    {item.electorate && <td>{item.electorate}</td>}
-                    <td>{item.state}</td>
+                    <td className='centered-in-small'>{item.party}</td>
+                    {item.electorate && (
+                      <td className='centered-in-small'>{item.electorate}</td>
+                    )}
+                    <td className={`${item.electorate && 'hide-in-small'}`}>
+                      {item.state}
+                    </td>
                     <td
                       width='80'
                       className={`
@@ -256,9 +302,9 @@ const Index = () => {
   return (
     <>
       <Nav />
-      <Head />
+      <Head title='MP Tracker | Raise Newstart' />
       <FooterCTA _data={c.hero} />
-      <div className='grid-container mt-5'>
+      <div className='grid-container mt-0'>
         <div className='grid-x'>
           <div className='small-12 cells'>
             <div className='tabs'>
@@ -276,10 +322,8 @@ const Index = () => {
           </div>
         </div>
       </div>
-      <div className='tracker-container'>
-        {renderTracker}
-        {/* <Tracker _data={data} /> */}
-      </div>
+      <div className='tracker-container'>{renderTracker}</div>
+      <Footer />
     </>
   )
 }
