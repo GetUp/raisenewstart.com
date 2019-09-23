@@ -4,7 +4,7 @@ import Form from './form.js'
 import Nav from '../components/Nav'
 import content from '../content/mptracker.md'
 import { CheckMark, CrossMark, AlertMark } from '../components/Icons'
-import Head from '../components/head'
+import Head from '../components/Head'
 import Footer from '../components/Footer'
 
 const PageGrid = ({ children, className }) => (
