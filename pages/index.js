@@ -3,7 +3,7 @@ import Layout from '../components/Layout'
 import Form from './form.js'
 import Nav from '../components/Nav'
 import LogoAnimation from '../components/LogoAnimation'
-import Modal from '../components/Modal'
+import TJModal from '../components/TJModal'
 import content from '../content/index.md'
 import Head from '../components/Head'
 import Footer from '../components/Footer'
@@ -43,11 +43,10 @@ const Hero = ({ data }) => (
             {data.title}
             <span className='ml-2'>{data.cta}</span>
           </h1>
-          <Modal
-            href='https://www.getup.org.au/campaigns/federal-election-2018-19/election-home/join-us'
-            buttonText={data.button}
+          <TJModal
+            href='https://www.getup.org.au/campaigns/income-support/raise-newstart-web-page/sign-now-raise-newstart'
+            buttonText='Join the campaign!'
             className='btn'
-            heading='Blah'
           />
         </div>
       </PageGrid>
@@ -280,11 +279,10 @@ const FooterCTA = ({ data }) => (
           <div className='small-12 columns'>
             <h2 className='footer-blurb h5'>{data.subtitle}</h2>
             <h3 className='footer-heading h1'>{data.title}</h3>
-            <Modal
-              href={data.link}
-              buttonText='Join the campaign'
+            <TJModal
+              href='https://www.getup.org.au/campaigns/income-support/raise-newstart-web-page/sign-now-raise-newstart'
+              buttonText='Join the campaign!'
               className='btn'
-              heading={data.moduleHeading}
             />
           </div>
         </div>

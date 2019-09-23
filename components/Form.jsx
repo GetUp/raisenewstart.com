@@ -6,13 +6,13 @@ const RecruitForm = props => (
       <div className='modal-v2-text-wrapper'>
         <h1 className='h2 modal-v2-heading'>{props.heading}</h1>
         <p className='modal-v2-blurb'>
-          While hard right politicians have big money and party machinery, we've got real
-          grassroots power in communities all across the country.
-          <br />
-          <span style={{ display: 'block', fontWeight: 'bold', marginTop: '8px' }}>
+          Will you stand with people locked out of work and sign the petition for an
+          immediate raise to Newstart?
+          {/* <br /> */}
+          {/* <span style={{ display: 'block', fontWeight: 'bold', marginTop: '8px' }}>
             Sign up to receive updates on how you can have a huge impact as a GetUp
             volunteer.
-          </span>
+          </span> */}
         </p>
         <form onSubmit={e => props.handleSubmit(e)}>
           <div className='names'>

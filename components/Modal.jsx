@@ -50,7 +50,7 @@ class Modal extends Component {
     const payload = {
       module_id: this.state.module.moduleId,
       page_id: this.state.module.pageId,
-      external_source: 'election19',
+      external_source: 'raiseNewstart',
       first_name: firstName,
       last_name: lastName,
       email,
