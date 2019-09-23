@@ -59,25 +59,17 @@ verificationParser =
 init : Flags -> ( Model, Cmd Msg )
 init flags =
     let
-        queryResult =
-            Decode.decodeValue flagsDecoder flags
+        maybeVerification =
+            Result.toMaybe (Decode.decodeValue flagsDecoder flags)
+                |> Maybe.andThen (\q -> Url.fromString ("https://_" ++ q))
+                |> Maybe.andThen (Url.Parser.parse verificationParser)
+                |> Maybe.Extra.join
     in
-    case queryResult of
-        Ok queryString ->
-            let
-                maybeV =
-                    Url.fromString ("https://_" ++ queryString)
-                        |> Maybe.andThen (Url.Parser.parse verificationParser)
-                        |> Maybe.Extra.join
-            in
-            case maybeV of
-                Just verification ->
-                    ( Verified verification, Cmd.none )
+    case maybeVerification of
+        Just verification ->
+            ( Verified verification, Cmd.none )
 
-                Nothing ->
-                    ( VerificationError, Cmd.none )
-
-        Err _ ->
+        Nothing ->
             ( VerificationError, Cmd.none )
 
 
