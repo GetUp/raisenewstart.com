@@ -5,6 +5,7 @@ import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events exposing (..)
 import Http exposing (..)
+import Json.Decode as Decode
 import Json.Encode as Encode
 
 
@@ -14,6 +15,7 @@ type alias Model =
     , response : SubmitResponse
     , details : Details
     , moduleSize : ModuleSize
+    , host : Host
     }
 
 
@@ -52,6 +54,10 @@ type alias Accordion =
     , header : String
     , content : String
     }
+
+
+type alias Host =
+    String
 
 
 type Pane
@@ -112,33 +118,34 @@ initialCircumstances =
     }
 
 
-initialModel : Model
-initialModel =
+initialModel : Host -> Model
+initialModel host =
     { accordions = initialAccordions
     , currentPane = PersonalDetails
     , response = NotSubmitted
     , details = initialDetails
     , moduleSize = Shrunk
+    , host = host
     }
 
 
-encode : Model -> Encode.Value
-encode model =
+encode : Details -> Encode.Value
+encode details =
     Encode.object
-        [ ( "firstName", Encode.string model.details.firstName )
-        , ( "lastName", Encode.string model.details.lastName )
-        , ( "email", Encode.string model.details.email )
-        , ( "address", Encode.string model.details.address )
-        , ( "suburb", Encode.string model.details.suburb )
-        , ( "postcode", Encode.string model.details.postcode )
-        , ( "dob", Encode.string model.details.dob )
-        , ( "phone", Encode.string model.details.phone )
-        , ( "crn", Encode.string model.details.crn )
-        , ( "debtReason", Encode.string model.details.debtReason )
-        , ( "emailMP", Encode.bool model.details.emailMP )
-        , ( "emailMinister", Encode.bool model.details.emailMinister )
-        , ( "submitFoi", Encode.bool model.details.submitFoi )
-        , ( "personalCircumstances", encodePersonalCircumstances model.details.personalCircumstances )
+        [ ( "firstName", Encode.string details.firstName )
+        , ( "lastName", Encode.string details.lastName )
+        , ( "email", Encode.string details.email )
+        , ( "address", Encode.string details.address )
+        , ( "suburb", Encode.string details.suburb )
+        , ( "postcode", Encode.string details.postcode )
+        , ( "dob", Encode.string details.dob )
+        , ( "phone", Encode.string details.phone )
+        , ( "crn", Encode.string details.crn )
+        , ( "debtReason", Encode.string details.debtReason )
+        , ( "emailMP", Encode.bool details.emailMP )
+        , ( "emailMinister", Encode.bool details.emailMinister )
+        , ( "submitFoi", Encode.bool details.submitFoi )
+        , ( "personalCircumstances", encodePersonalCircumstances details.personalCircumstances )
         ]
 
 
@@ -166,12 +173,30 @@ encodePersonalCircumstances circumstances =
     Encode.list Encode.string list
 
 
-init : () -> ( Model, Cmd Msg )
-init _ =
-    ( initialModel, Cmd.none )
+hostDecoder : Decode.Decoder String
+hostDecoder =
+    Decode.field "host" Decode.string
 
 
-main : Program () Model Msg
+type alias Flags =
+    Decode.Value
+
+
+init : Flags -> ( Model, Cmd Msg )
+init flags =
+    let
+        hostResult =
+            Decode.decodeValue hostDecoder flags
+    in
+    case hostResult of
+        Ok host ->
+            ( initialModel host, Cmd.none )
+
+        Err error ->
+            ( initialModel "", Cmd.none )
+
+
+main : Program Flags Model Msg
 main =
     Browser.element
         { init = init
@@ -513,13 +538,9 @@ update msg model =
 
 submitForm : Model -> Cmd Msg
 submitForm model =
-    let
-        _ =
-            Debug.log "Submit " model
-    in
     Http.post
-        { url = "https://t1o3wcwixf.execute-api.us-east-1.amazonaws.com/dev/begin"
-        , body = Http.jsonBody (encode model)
+        { url = model.host ++ "/begin"
+        , body = Http.jsonBody (encode model.details)
         , expect = Http.expectString GotResponse
         }
 

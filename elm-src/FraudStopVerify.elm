@@ -19,10 +19,14 @@ import Url.Parser.Query as Query
 
 
 type Model
-    = Verified Verification
+    = Verified Host Verification
     | VerificationError
     | Loading
     | Res (Result Http.Error String)
+
+
+type alias Host =
+    String
 
 
 type alias Verification =
@@ -43,9 +47,14 @@ type alias Flags =
     Decode.Value
 
 
-flagsDecoder : Decode.Decoder String
-flagsDecoder =
+queryDecoder : Decode.Decoder String
+queryDecoder =
     Decode.field "query" Decode.string
+
+
+hostDecoder : Decode.Decoder String
+hostDecoder =
+    Decode.field "host" Decode.string
 
 
 verificationParser : Parser (Maybe Verification -> Maybe Verification) (Maybe Verification)
@@ -59,17 +68,20 @@ verificationParser =
 init : Flags -> ( Model, Cmd Msg )
 init flags =
     let
+        maybeHost =
+            Result.toMaybe (Decode.decodeValue hostDecoder flags)
+
         maybeVerification =
-            Result.toMaybe (Decode.decodeValue flagsDecoder flags)
+            Result.toMaybe (Decode.decodeValue queryDecoder flags)
                 |> Maybe.andThen (\q -> Url.fromString ("https://_" ++ q))
                 |> Maybe.andThen (Url.Parser.parse verificationParser)
                 |> Maybe.Extra.join
     in
-    case maybeVerification of
-        Just verification ->
-            ( Verified verification, Cmd.none )
+    case ( maybeHost, maybeVerification ) of
+        ( Just host, Just verification ) ->
+            ( Verified host verification, Cmd.none )
 
-        Nothing ->
+        _ ->
             ( VerificationError, Cmd.none )
 
 
@@ -87,8 +99,8 @@ update msg model =
     case msg of
         SubmitVerification ->
             case model of
-                Verified verification ->
-                    ( Loading, submitVerification verification )
+                Verified host verification ->
+                    ( Loading, submitVerification host verification )
 
                 _ ->
                     ( VerificationError, Cmd.none )
@@ -97,10 +109,10 @@ update msg model =
             ( Res state, Cmd.none )
 
 
-submitVerification : Verification -> Cmd Msg
-submitVerification verification =
+submitVerification : Host -> Verification -> Cmd Msg
+submitVerification host verification =
     Http.post
-        { url = "https://t1o3wcwixf.execute-api.us-east-1.amazonaws.com/dev/verify"
+        { url = host ++ "/verify"
         , body = Http.jsonBody (encode verification)
         , expect = Http.expectString GotResponse
         }
@@ -126,7 +138,7 @@ showModule model =
         VerificationError ->
             verificationErrorView
 
-        Verified verification ->
+        Verified _ verification ->
             verifiedView
 
         Loading ->

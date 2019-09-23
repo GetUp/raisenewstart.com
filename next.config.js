@@ -3,7 +3,11 @@ const withSass = require('@zeit/next-sass')
 
 module.exports = withCSS(
   withSass({
+    env: {
+      apiHost: process.env.FRAUDSTOP_API_HOST
+    },
     webpack: config => {
+
       // Fixes npm packages that depend on `fs` module
       config.node = {
         fs: 'empty'
