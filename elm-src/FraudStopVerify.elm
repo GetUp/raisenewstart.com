@@ -85,10 +85,6 @@ type Msg
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
-    let
-        _ =
-            Debug.log "Message " msg
-    in
     case msg of
         PrepareVerification ->
             ( model, Cmd.none )
@@ -107,10 +103,6 @@ update msg model =
 
 submitVerification : Verification -> Cmd Msg
 submitVerification verification =
-    let
-        _ =
-            Debug.log "Submit " verification
-    in
     Http.post
         { url = "https://t1o3wcwixf.execute-api.us-east-1.amazonaws.com/dev/verify"
         , body = Http.jsonBody (encode verification)
