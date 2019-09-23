@@ -8,8 +8,10 @@ import Html.Events exposing (onSubmit)
 import Http
 import Json.Decode as Decode
 import Json.Encode as Encode
-import Parser as P exposing ((|.), (|=), Parser)
-import Set
+import Maybe.Extra
+import Url
+import Url.Parser exposing (Parser)
+import Url.Parser.Query as Query
 
 
 
@@ -46,45 +48,28 @@ flagsDecoder =
     Decode.field "query" Decode.string
 
 
-verificationParser : Parser Verification
+verificationParser : Parser (Maybe Verification -> Maybe Verification) (Maybe Verification)
 verificationParser =
-    let
-        hexChar =
-            { start = Char.isHexDigit
-            , inner = Char.isHexDigit
-            , reserved = Set.empty
-            }
-    in
-    P.succeed Verification
-        |. P.keyword "?request_id"
-        |. P.symbol "="
-        |= P.int
-        |. P.keyword "&secure_token"
-        |. P.symbol "="
-        |= P.variable hexChar
-        |. P.end
+    Url.Parser.query <|
+        Query.map2 (Maybe.map2 Verification)
+            (Query.int "request_id")
+            (Query.string "secure_token")
 
 
 init : Flags -> ( Model, Cmd Msg )
 init flags =
     let
-        queryResult =
-            Decode.decodeValue flagsDecoder flags
+        maybeVerification =
+            Result.toMaybe (Decode.decodeValue flagsDecoder flags)
+                |> Maybe.andThen (\q -> Url.fromString ("https://_" ++ q))
+                |> Maybe.andThen (Url.Parser.parse verificationParser)
+                |> Maybe.Extra.join
     in
-    case queryResult of
-        Ok queryString ->
-            let
-                maybeV =
-                    P.run verificationParser queryString
-            in
-            case maybeV of
-                Ok verification ->
-                    ( Verified verification, Cmd.none )
+    case maybeVerification of
+        Just verification ->
+            ( Verified verification, Cmd.none )
 
-                Err _ ->
-                    ( VerificationError, Cmd.none )
-
-        Err _ ->
+        Nothing ->
             ( VerificationError, Cmd.none )
 
 
@@ -93,28 +78,20 @@ init flags =
 
 
 type Msg
-    = PrepareVerification
-    | SubmitVerification
+    = SubmitVerification
     | GotResponse (Result Http.Error String)
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
-    let
-        _ =
-            Debug.log "Message " msg
-    in
     case msg of
-        PrepareVerification ->
-            ( model, Cmd.none )
-
         SubmitVerification ->
             case model of
                 Verified verification ->
                     ( Loading, submitVerification verification )
 
                 _ ->
-                    ( model, Cmd.none )
+                    ( VerificationError, Cmd.none )
 
         GotResponse state ->
             ( Res state, Cmd.none )
@@ -122,10 +99,6 @@ update msg model =
 
 submitVerification : Verification -> Cmd Msg
 submitVerification verification =
-    let
-        _ =
-            Debug.log "Submit " verification
-    in
     Http.post
         { url = "https://t1o3wcwixf.execute-api.us-east-1.amazonaws.com/dev/verify"
         , body = Http.jsonBody (encode verification)
