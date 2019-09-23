@@ -78,17 +78,13 @@ init flags =
 
 
 type Msg
-    = PrepareVerification
-    | SubmitVerification
+    = SubmitVerification
     | GotResponse (Result Http.Error String)
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
-        PrepareVerification ->
-            ( model, Cmd.none )
-
         SubmitVerification ->
             case model of
                 Verified verification ->
