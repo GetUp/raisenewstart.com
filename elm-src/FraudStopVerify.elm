@@ -91,7 +91,7 @@ update msg model =
                     ( Loading, submitVerification verification )
 
                 _ ->
-                    ( model, Cmd.none )
+                    ( VerificationError, Cmd.none )
 
         GotResponse state ->
             ( Res state, Cmd.none )
