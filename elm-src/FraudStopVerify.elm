@@ -113,9 +113,9 @@ submitVerification verification =
 view : Model -> Html Msg
 view model =
     div []
-        [ div [ class "grid-container fluid fraudstop" ]
-            [ div [ class "grid-x grid-padding-x " ]
-                [ showModule model ]
+        [ div [ class "grid-container py-5" ]
+            [ div [ class "grid-x form-container" ]
+                [ div [ class "cell small-12" ] [ showModule model ] ]
             ]
         ]
 
@@ -141,7 +141,7 @@ showModule model =
 
 verificationErrorView : Html Msg
 verificationErrorView =
-    div []
+    h1 [ class "h3 orange-text bold" ]
         [ text "Your details could not be verified. :("
         ]
 
@@ -159,21 +159,23 @@ verifiedView =
 
 loadingSubmitView : Html Msg
 loadingSubmitView =
-    div [ class "form-container loading-container mt-5" ]
+    div [ class "form-container loading-container my-5" ]
         [ img [ src "/static/images/spinner.svg", alt "Loading..." ] []
         ]
 
 
 successSubmitView : Html Msg
 successSubmitView =
-    div []
-        [ text "Success! We've put your appeal letter together and posted it to Centrelink."
+    h1 [ class "h3 orange-text" ]
+        [ span [ class "green-text bold" ] [ text "Success!" ]
+        , br [] []
+        , text "We've put your appeal letter together and posted it to Centrelink."
         ]
 
 
 errorSubmitView : Html Msg
 errorSubmitView =
-    div []
+    h1 [ class "h3 orange-text" ]
         [ text "There was an error. :("
         ]
 
