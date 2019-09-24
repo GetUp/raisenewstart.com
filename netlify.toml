@@ -8,5 +8,5 @@
   FRAUDSTOP_API_HOST = "https://t1o3wcwixf.execute-api.us-east-1.amazonaws.com/dev"
 
 [[redirects]]
-  from = "http://raisenewstart.netlify.com/*"
-  to = "http://raise-newstart.com/:splat"
+  from = "https://raisenewstart.netlify.com/*"
+  to = "https://raise-newstart.com/:splat"
