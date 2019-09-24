@@ -1,13 +1,11 @@
 import React, { useState, useEffect, useRef } from 'react'
 import ReactMarkdown from 'react-markdown'
 import Layout from '../components/Layout'
-import content from '../content/about.md'
 import AutoSizingIframe from '../components/AutoSizingIframe'
 import { TweenMax, TimelineMax } from 'gsap'
 import { SSL_OP_NO_TLSv1_1 } from 'constants'
 
 const Animation = () => {
-  const c = content.attributes
   useEffect(() => {
     TweenMax.set('#new', {
       scale: 0,
