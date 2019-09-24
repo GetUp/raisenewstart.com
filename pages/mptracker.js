@@ -156,7 +156,7 @@ const Tracker = ({ _data }) => {
                 <tr>
                   <th className='nosort' />
                   <th
-                    className={`nosort ${sortedData[0].electorate && 'hide-in-small'}`}
+                    className={`nosort ${sortedData[0].electorate ? 'hide-in-small' : ''}`}
                   />
                   {sortedData[0].electorate && <th className={`nosort`} />}
                   <th className={`nosort`} />
@@ -169,7 +169,7 @@ const Tracker = ({ _data }) => {
                 </tr>
                 <tr className='lower'>
                   <th
-                    className={field == 'name' && 'active'}
+                    className={field == 'name' ? 'active' : ''}
                     onClick={() => {
                       setField('name')
                       setOrder(!order)
@@ -177,7 +177,7 @@ const Tracker = ({ _data }) => {
                     Name
                   </th>
                   <th
-                    className={`${field == 'party' && 'active'}`}
+                    className={field == 'party' ? 'active' : ''}
                     onClick={() => {
                       setField('party')
                       setOrder(!order)
@@ -186,7 +186,7 @@ const Tracker = ({ _data }) => {
                   </th>
                   {sortedData[0].electorate && (
                     <th
-                      className={`${field == 'electorate' && 'active'}`}
+                      className={field == 'electorate' ? 'active' : ''}
                       onClick={() => {
                         setField('electorate')
                         setOrder(!order)
@@ -195,8 +195,8 @@ const Tracker = ({ _data }) => {
                     </th>
                   )}
                   <th
-                    className={`${sortedData[0].electorate && 'hide-in-small'} ${field ==
-                      'state' && 'active'}`}
+                    className={`${sortedData[0].electorate ? 'hide-in-small' : ''} ${field ==
+                      'state' ? 'active' : ''}`}
                     onClick={() => {
                       setField('state')
                       setOrder(!order)
@@ -204,35 +204,35 @@ const Tracker = ({ _data }) => {
                     State
                   </th>
                   <th
-                    className={`centered meeting ${field == 'firstMeeting' && 'active'}`}
+                    className={`centered meeting ${field == 'firstMeeting' ? 'active' : ''}`}
                     onClick={() => {
                       setField('firstMeeting')
                       setOrder(!order)
                     }}>
-                    <span class='hide-in-small'>First</span>
-                    <span class='show-only-in-small'>
+                    <span className='hide-in-small'>First</span>
+                    <span className='show-only-in-small'>
                       1<sup>st</sup>
                     </span>
                   </th>
                   <th
-                    className={`centered meeting ${field == 'secondMeeting' && 'active'}`}
+                    className={`centered meeting ${field == 'secondMeeting' ? 'active' : ''}`}
                     onClick={() => {
                       setField('secondMeeting')
                       setOrder(!order)
                     }}>
-                    <span class='hide-in-small'>Second</span>
-                    <span class='show-only-in-small'>
+                    <span className='hide-in-small'>Second</span>
+                    <span className='show-only-in-small'>
                       2<sup>nd</sup>
                     </span>
                   </th>
                   <th
-                    className={`centered meeting ${field == 'thirdMeeting' && 'active'}`}
+                    className={`centered meeting ${field == 'thirdMeeting' ? 'active' : ''}`}
                     onClick={() => {
                       setField('thirdMeeting')
                       setOrder(!order)
                     }}>
-                    <span class='hide-in-small'>Third</span>
-                    <span class='show-only-in-small'>
+                    <span className='hide-in-small'>Third</span>
+                    <span className='show-only-in-small'>
                       3<sup>rd</sup>
                     </span>
                   </th>
@@ -246,7 +246,7 @@ const Tracker = ({ _data }) => {
                     {item.electorate && (
                       <td className='centered-in-small'>{item.electorate}</td>
                     )}
-                    <td className={`${item.electorate && 'hide-in-small'}`}>
+                    <td className={`${item.electorate ? 'hide-in-small' : ''}`}>
                       {item.state}
                     </td>
                     <td
@@ -308,12 +308,12 @@ const Index = () => {
           <div className='small-12 cells'>
             <div className='tabs'>
               <a
-                className={`tab ${activeTab && 'active'}`}
+                className={`tab ${activeTab ? 'active' : ''}`}
                 onClick={() => setActiveTab(true)}>
                 MPs
               </a>
               <a
-                className={`tab ${!activeTab && 'active'}`}
+                className={`tab ${!activeTab ? 'active' : ''}`}
                 onClick={() => setActiveTab(false)}>
                 Senators
               </a>

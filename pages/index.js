@@ -76,7 +76,7 @@ const IncomeCalculator = ({ data }) => {
 
   return (
     <PageGrid className='small-12 my-5'>
-      <label for='annual-income' className='annual-income-label'>
+      <label htmlFor='annual-income' className='annual-income-label'>
         {data.title}
       </label>{' '}
       <div className='annual-income-input--container'>
@@ -97,8 +97,8 @@ const IncomeCalculator = ({ data }) => {
             <span>${parseInt(income / 52)}/week</span>
           </div>
         </div>
-        {data.otherincome.map(item => (
-          <div className='bar' style={{ width: calculateWidth(item.wagesPerWeek) }}>
+        {data.otherincome.map((item, index) => (
+          <div className='bar' style={{ width: calculateWidth(item.wagesPerWeek) }} key={index}>
             <div>
               {item.title}
               <span>${item.wagesPerWeek}/week</span>
@@ -115,6 +115,7 @@ const Testimonials = ({ data }) => (
     <WavePattern colour='orange' />
     {data.map((item, index) => (
       <div
+        key={index}
         className={`background testimonials py-0 ${
           index % 2 === 0 ? 'background-orange' : 'background-green'
           }`}>
