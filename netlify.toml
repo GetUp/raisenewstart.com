@@ -1,0 +1,8 @@
+[context.production.environment]
+  FRAUDSTOP_API_HOST = "https://g61l1rzvaj.execute-api.us-east-1.amazonaws.com/prod/"
+
+[context.deploy-preview.environment]
+  FRAUDSTOP_API_HOST = "https://t1o3wcwixf.execute-api.us-east-1.amazonaws.com/dev"
+
+[context.branch-deploy.environment]
+  FRAUDSTOP_API_HOST = "https://t1o3wcwixf.execute-api.us-east-1.amazonaws.com/dev"
