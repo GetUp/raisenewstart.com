@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react'
 import Layout from '../components/Layout'
-import Form from './form.js'
 import Nav from '../components/Nav'
 import LogoAnimation from '../components/LogoAnimation'
 import TJModal from '../components/TJModal'
@@ -118,7 +117,7 @@ const Testimonials = ({ data }) => (
       <div
         className={`background testimonials py-0 ${
           index % 2 === 0 ? 'background-orange' : 'background-green'
-        }`}>
+          }`}>
         <div className='grid-container'>
           <div
             className={`grid-x align-middle ${index % 2 === 1 &&

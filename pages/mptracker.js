@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useRef, useCallback, useMemo } from 'react'
 import Layout from '../components/Layout'
-import Form from './form.js'
 import Nav from '../components/Nav'
 import content from '../content/mptracker.md'
 import { CheckMark, CrossMark, AlertMark } from '../components/Icons'
@@ -291,10 +290,10 @@ const Index = () => {
       return activeTab ? (
         <Tracker _data={c.mps} />
       ) : (
-        <div>
-          <Tracker _data={c.senators} />{' '}
-        </div>
-      )
+          <div>
+            <Tracker _data={c.senators} />{' '}
+          </div>
+        )
     },
     [activeTab]
   )
