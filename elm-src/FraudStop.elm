@@ -241,10 +241,6 @@ type Msg
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
-    let
-        _ =
-            Debug.log "Message " msg
-    in
     case msg of
         ClickedAccordion accordionHeader ->
             let
