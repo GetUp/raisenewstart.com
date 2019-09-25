@@ -634,19 +634,19 @@ personalDetailsView details model currentPane =
             ]
         , div [ class "form-item" ]
             [ label [ class "", for "email" ] [ text "Email" ]
-            , input [ type_ "email", required True, id "email", name "email", placeholder "Email", value details.email, value details.email, onInput SetEmail ] []
+            , input [ type_ "email", required True, id "email", name "email", placeholder "Email", value details.email, onInput SetEmail ] []
             ]
         , div [ class "form-item" ]
             [ label [ class "", for "address" ] [ text "Address" ]
-            , input [ type_ "text", required True, id "address", name "address", placeholder "Address", value details.address, value details.address, onInput SetAddress ] []
+            , input [ type_ "text", required True, id "address", name "address", placeholder "Address", value details.address, onInput SetAddress ] []
             ]
         , div [ class "form-item" ]
             [ label [ class "", for "suburb" ] [ text "Suburb" ]
-            , input [ type_ "text", required True, id "suburb", name "suburb", placeholder "Suburb", value details.suburb, value details.suburb, onInput SetSuburb ] []
+            , input [ type_ "text", required True, id "suburb", name "suburb", placeholder "Suburb", value details.suburb, onInput SetSuburb ] []
             ]
         , div [ class "form-item" ]
             [ label [ class "", for "postcode" ] [ text "Post Code" ]
-            , input [ type_ "text", required True, id "postcode", name "postcode", placeholder "Post Code", value details.postcode, pattern "^[0-9]{4}$", title "Your postcode should be 4 digits", value details.postcode, onInput SetPostcode ] []
+            , input [ type_ "text", required True, id "postcode", name "postcode", placeholder "Post Code", pattern "^[0-9]{4}$", title "Your postcode should be 4 digits", value details.postcode, onInput SetPostcode ] []
             ]
         , div [ class "form-item" ]
             [ label [ class "", for "dob" ] [ text "Date of Birth" ]
@@ -654,11 +654,11 @@ personalDetailsView details model currentPane =
             ]
         , div [ class "form-item" ]
             [ label [ class "", for "Phone" ] [ text "Phone" ]
-            , input [ type_ "text", required True, id "Phone", name "Phone", placeholder "Phone", value details.phone, pattern "^[+ 0-9]{10,16}$", title "Please enter your phone number with area code. e.g. 02 9876 5432", value details.phone, onInput SetPhone ] []
+            , input [ type_ "text", required True, id "Phone", name "Phone", placeholder "Phone", pattern "^[+ 0-9]{10,16}$", title "Please enter your phone number with area code. e.g. 02 9876 5432", value details.phone, onInput SetPhone ] []
             ]
         , div [ class "form-item" ]
             [ label [ class "", for "crn" ] [ text "Centrelink Reference Number (CRN)" ]
-            , input [ type_ "text", required True, id "crn", name "crn", placeholder "123456789A", value details.crn, pattern "^[0-9]{9}[a-zA-Z]{1}$", title "Your Centrelink CRN should be 9 digits followed by 1 letter", value details.crn, onInput SetCRN ] []
+            , input [ type_ "text", required True, id "crn", name "crn", placeholder "123456789A", pattern "^[0-9]{9}[a-zA-Z]{1}$", title "Your Centrelink CRN should be 9 digits followed by 1 letter", value details.crn, onInput SetCRN ] []
             ]
         , button [ type_ "submit", class "btn btn-primary mt-4" ] [ text "Next" ]
         ]
@@ -727,16 +727,16 @@ personalCircumstancesView details currentPane =
             [ label [ class "mb-3" ] [ text "Which specific personal circumstances apply to your case? (choose all those that apply)" ]
             , div
                 [ class "radio-buttons" ]
-                [ input [ id "illness", class "mr-2 mb-3", type_ "checkbox", value "Illness (including mental illness)", onClick SetIllness, checked details.personalCircumstances.illness ] []
+                [ input [ id "illness", class "mr-2 mb-3", type_ "checkbox", onClick SetIllness, checked details.personalCircumstances.illness ] []
                 , label [ for "illness", class "mr-3" ] [ text "Illness (including mental illness)" ]
                 , br [] []
-                , input [ id "financial-hardship", class "mr-2 mb-3", type_ "checkbox", value "Financial hardship", onClick SetFinancialHardship, checked details.personalCircumstances.financialHardship ] []
+                , input [ id "financial-hardship", class "mr-2 mb-3", type_ "checkbox", onClick SetFinancialHardship, checked details.personalCircumstances.financialHardship ] []
                 , label [ for "financial-hardship", class "mr-3" ] [ text "Financial hardship" ]
                 , br [] []
-                , input [ id "addiction", class "mr-2 mb-3", type_ "checkbox", value "Addiction", onClick SetAddiction, checked details.personalCircumstances.addiction ] []
+                , input [ id "addiction", class "mr-2 mb-3", type_ "checkbox", onClick SetAddiction, checked details.personalCircumstances.addiction ] []
                 , label [ for "addiction", class "mr-3" ] [ text "Addiction" ]
                 , br [] []
-                , input [ id "homelessness", class "mr-2 mb-3", type_ "checkbox", value "Homelessness", onClick SetHomelessness, checked details.personalCircumstances.homelessness ] []
+                , input [ id "homelessness", class "mr-2 mb-3", type_ "checkbox", onClick SetHomelessness, checked details.personalCircumstances.homelessness ] []
                 , label [ for "homelessness", class "mr-3" ] [ text "Homelessness" ]
                 , br [] []
                 , input [ class "mr-2 mb-3 mt-2 other-inputbox", type_ "text", placeholder "Other circumstances (if any)", onInput SetOtherReason ] []
@@ -759,50 +759,29 @@ finalStepView details currentPane =
         , div [ class "alert-container" ]
             [ p [] [ text "Please note that to do this we have to pass on some of your personal details, including your name, address, email and phone number." ]
             ]
-        , div
-            []
-            [ input
-                [ id "email_local_member"
-                , class "mr-2"
-                , type_ "checkbox"
-                , value "Email my local Member of Parliament asking for assistance with my case."
-                , onClick SetEmailMP
-                , checked details.emailMP
-                ]
-                []
+        , div []
+            [ input [ id "email_local_member", class "mr-2", type_ "checkbox", onClick SetEmailMP, checked details.emailMP ] []
             , label [ for "email_local_member", class "mr-3" ] [ text "Email my local Member of Parliament asking for assistance with my case." ]
             , br [] []
             , br [] []
-            , input
-                [ id "email_minister"
-                , class "mr-2"
-                , type_ "checkbox"
-                , value "Email Christian Porter MP, the Minister in charge of Centrelink, calling on him to stop the automatic debt-threat letters immediately."
-                , onClick SetEmailMinister
-                , checked details.emailMinister
-                ]
-                []
-            , label [ for "email_minister", class "mr-3 mb-3" ] [ text "Email Christian Porter MP, the Minister in charge of Centrelink, calling on him to stop the automatic debt-threat letters immediately." ]
+            , input [ id "email_minister", class "mr-2", type_ "checkbox", onClick SetEmailMinister, checked details.emailMinister ] []
+            , label [ for "email_minister", class "mr-3 mb-3" ] [ text "Email the Minister in charge of Centrelink, calling on them to stop the automatic debt-threat letters immediately." ]
             , br [] []
             , br [] []
-            , input
-                [ id "submit_foi"
-                , class "mr-2"
-                , type_ "checkbox"
-                , value "Submit a Freedom of Information request asking for my current Centrelink file and the information used to calculate the debt Centrelink claims I owe."
-                , onClick SetSubmitFoi
-                , checked details.submitFoi
+            , input [ id "submit_foi", class "mr-2", type_ "checkbox", onClick SetSubmitFoi, checked details.submitFoi ] []
+            , label [ for "submit_foi", class "mr-3" ]
+                [ text "Submit a Freedom of Information request asking for my current Centrelink file and the information used to calculate the debt Centrelink claims I owe."
                 ]
-                []
-            , label [ for "submit_foi", class "mr-3" ] [ text "Submit a Freedom of Information request asking for my current Centrelink file and the information used to calculate the debt Centrelink claims I owe." ]
             , br [] []
             , hr [] []
-            , input [ id "receive_updates", class "mr-2", type_ "checkbox", value "Receive updates", onClick SetReceiveUpdates, checked details.receiveUpdates ] []
+            , input [ id "receive_updates", class "mr-2", type_ "checkbox", onClick SetReceiveUpdates, checked details.receiveUpdates ] []
             , label [ for "receive_updates", class "mr-3" ] [ text "Receive updates" ]
             , br [] []
             , br [] []
-            , input [ id "participate_class_action", class "mr-2", type_ "checkbox", value "Would you be interested in participating in a potential class action lawsuit against the automated debt letters?", onClick SetClassAction, checked details.classAction ] []
-            , label [ for "participate_class_action", class "mr-3" ] [ text "Would you be interested in participating in a potential class action lawsuit against the automated debt letters?" ]
+            , input [ id "participate_class_action", class "mr-2", type_ "checkbox", onClick SetClassAction, checked details.classAction ] []
+            , label [ for "participate_class_action", class "mr-3" ]
+                [ text "Would you be interested in participating in a potential class action lawsuit against the automated debt letters?"
+                ]
             ]
         , a [ class "btn btn-outline btn-primary mt-5 mr-2", onClick GoToPersonalCircumstances ] [ text "Back" ]
         , a [ class "btn btn-primary mt-5", onClick SubmitForm ] [ text "Submit" ]
