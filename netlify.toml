@@ -8,7 +8,7 @@
   FRAUDSTOP_API_HOST = "https://t1o3wcwixf.execute-api.us-east-1.amazonaws.com/dev"
 
 [[redirects]]
-  from = "https://raisenewstart.netlify.com"
-  to = "https://raise-newstart.com"
+  from = "https://raisenewstart.netlify.com/*"
+  to = "https://raise-newstart.com/:splat"
   status = 301
   force = true
