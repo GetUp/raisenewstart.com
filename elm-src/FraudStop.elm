@@ -866,8 +866,8 @@ view model =
                             , text "Just enter the details of your appeal, and Fraudstop will automatically generate and send a number of letters that will help you initiate and progress your appeal."
                             ]
                         , p [ class "h5 mb-4" ]
-                            [ b [] [ text "Fraudstop is not a complete solution." ]
-                            , text " Appeals often take months, and require a fair amount of correspondence with Centrelink. But it is here to help get you started during a stressful time. "
+                            [ b [] [ text "Fraudstop is not a complete solution. " ]
+                            , text "Appeals often take months, and require a fair amount of correspondence with Centrelink. But it is here to help get you started during a stressful time."
                             ]
                         , div [ class "questions--container mt-3" ]
                             [ div [ class "question" ]
@@ -901,8 +901,6 @@ view model =
                             , span [ class "expanded-text" ] [ text "Expand" ]
                             , img [ src "/static/images/expand-icon.svg" ] []
                             ]
-
-                        -- , h2 [ class "h6 title" ] [ text "This is a title" ]
                         , p [] [ text "FraudStop makes it quick and easy to appeal an automated debt claim against you. All you need to do is enter a few details, explain why you want to appeal the debt claim against you, and hit send - FraudStop does the rest." ]
                         ]
                     , showModule model.response model
@@ -920,13 +918,13 @@ view model =
                                 [ text "If you’ve received a debt notice and it doesn’t seem right, chances are it isn’t. At least 20% of the automated debt letters sent out by the government have been incorrect. In total, more than 113,000 debts have been partially or fully reduced. In fact, on average debts that are appealed are reduced by 75%. As a result, experts are recommending that people submit their debt for review – regardless of whether they think the amount is correct."
                                 ]
                             , p []
-                                [ text "The appeals process can be long winded, but you can have any processing fees waived, and repayments suspended while the review process is underway. " ]
+                                [ text "The appeals process can be long winded, but you can have any processing fees waived, and repayments suspended while the review process is underway." ]
                             ]
                         , div [ class "mt-5", id "how-does-fraudstop-work" ]
                             [ h2 [ class "h4" ] [ b [] [ text "How does Fraudstop work?" ] ]
                             , ol []
                                 [ li []
-                                    [ b [] [ text "Using the information you provide, we compile a formal review request in accordance with Centrelink guidelines." ]
+                                    [ b [] [ text "Using the information you provide, we compile a formal review request in accordance with Centrelink guidelines. " ]
                                     , text "We then print it off and post your appeal to Centrelink on your behalf – free of charge, and send you an electronic copy for your records."
                                     ]
                                 , li []
@@ -939,7 +937,7 @@ view model =
                                     ]
                                 , li []
                                     [ b [] [ text "Send a complaint to Social Services Minister Anne Ruston, and Government Services Minister Stuart Robert" ]
-                                    , text " – who are responsible for maintaining this broken system, along with other attacks on income support recipients. "
+                                    , text " – who are responsible for maintaining this broken system, along with other attacks on income support recipients."
                                     ]
                                 , li []
                                     [ b [] [ text "We’ll send you a follow up pack with further information on sources of information and legal support, and an overview of the appeals timeline. " ]
