@@ -817,15 +817,9 @@ loadingSubmitView =
 successSubmitView : Html Msg
 successSubmitView =
     div [ class "form-container success-container mt-4" ]
-        [ h2 [ class "success-title h4" ] [ text "Success! We've put your appeal letter together and posted it to Centrelink. " ]
+        [ h2 [ class "success-title h4" ] [ text "We've received your details! Please check your email inbox to proceed." ]
         , div [ class "alert-container" ]
-            [ p [] [ text "You should receive an email from us (GetUp!) confirming that all documents have been correctly compiled and submitted. If you do not receive this email within 24 hours, please contact us (email info@getup.org.au) immediately as it means your request for a review may not have been correctly submitted." ]
-            ]
-        , p [] [ b [] [ text "What happens from here?" ] ]
-        , ul []
-            [ li [] [ text "If you haven't heard from Centrelink three weeks after submitting your review on this website, call Centrelink or go to an office in person to make sure they have received your appeal. Ask for a receipt number, which you should then use for all future communication with them. If they haven't received your appeal after three weeks, it is important you get in touch with Legal Aid and get further advice." ]
-            , li [] [ text "Currently, ARO reviews are taking somewhere between 2 to 6 months to resolve. You should hear from CentreLink at some point during this time, either because they are seeking further clarification from you, or hopefully to tell you they have reviewed your debt and reduced it, or cancelled it altogether. There is also a small chance that it could be increased, however." ]
-            , li [] [ text "Hopefully, that's it. However if you are unhappy with the ARO decision, you have the right to appeal their decision to the Social Services and Child Support division of the Administrative Appeals Tribunal, which lawyers can help you with." ]
+            [ p [] [ text "You should receive an email from us (GetUp!) very soon. If you do not receive this email, you may have typed your email incorrectly and you will need to resubmit your request." ]
             ]
         ]
 
