@@ -890,7 +890,7 @@ view model =
                     ]
                     [ div [ class "fraudstop-form-text--wrapper" ]
                         [ div
-                            [ class "expand-container"
+                            [ class "expand-container mb-2"
                             , classList
                                 [ ( "shrunk", model.moduleSize == Expanded )
                                 , ( "expanded", model.moduleSize == Shrunk )
@@ -901,7 +901,13 @@ view model =
                             , span [ class "expanded-text" ] [ text "Expand" ]
                             , img [ src "/static/images/expand-icon.svg" ] []
                             ]
-                        , p [] [ text "FraudStop makes it quick and easy to appeal an automated debt claim against you. All you need to do is enter a few details, explain why you want to appeal the debt claim against you, and hit send - FraudStop does the rest." ]
+                        , p []
+                            [ text "We have put together this website using information that is freely available online, to make your appeal easier. Nothing in this website should be taken as legal advice, however, before proceeding, you should consider whether this process is right for you. If you're uncertain, "
+                            , a [ href "https://www.australia.gov.au/information-and-services/public-safety-and-law/legal-aid", target "_blank" ]
+                                [ text "get in touch with lawyers"
+                                ]
+                            , text " who can provide you with advice personal to you."
+                            ]
                         ]
                     , showModule model.response model
                     ]
